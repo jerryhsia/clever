@@ -38,6 +38,7 @@ class AppBehavior extends Behavior
             'Access-Control-Allow-Credentials' => 'true',
             'Access-Control-Expose-Headers'    => 'X-Access-Token, X-Pagination-Total-Count, X-Pagination-Page-Count, X-Pagination-Per-Page, X-Pagination-Current-Page, Link'
         ];
+        
         $headerCollection = Yii::$app->response->getHeaders();
         foreach ($headers as $key => $value) {
             $headerCollection->set($key, $value);

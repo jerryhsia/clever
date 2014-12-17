@@ -34,6 +34,7 @@ class OptionsAction extends \yii\rest\OptionsAction
         foreach ($headers as $key => $value) {
             $headerCollection->set($key, $value);
         }
+
         parent::run($id);
     }
 }
