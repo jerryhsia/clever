@@ -71,7 +71,7 @@ $config = [
     ],
     'params' => require(__DIR__ . '/params.php'),
     'as AppBehavior' => [
-        'class' => 'app\behaviors\AppBehavior',
+        'class' => 'app\behaviors\AppBehavior'
     ]
 ];
 

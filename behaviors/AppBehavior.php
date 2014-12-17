@@ -28,7 +28,7 @@ class AppBehavior extends Behavior
 
     public function onBeforeRequest($event)
     {
-        
+
     }
 
     public function onBeforeAction($event)
