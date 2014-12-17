@@ -1,0 +1,9 @@
+#! /bin/bash
+./yii app/clear
+./yii migrate
+
+./tests/api/yii app/clear
+./tests/api/yii migrate
+
+./tests/unit/yii app/clear
+./tests/unit/yii migrate
