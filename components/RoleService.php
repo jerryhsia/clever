@@ -44,7 +44,7 @@ class RoleService
             $query->andFilterWhere(['id' => $filter['id']]);
 
         }
-        
+
         return $query;
     }
 

@@ -8,7 +8,6 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Role;
-use yii\rest\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -17,7 +16,7 @@ use yii\web\NotFoundHttpException;
  * @package app\controllers
  * @author Jerry Hsia<xiajie9916@gmail.com>
  */
-class RoleController extends Controller
+class RoleController extends RestController
 {
     /**
      * @var

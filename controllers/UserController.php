@@ -8,7 +8,6 @@ namespace app\controllers;
 use app\models\LoginForm;
 use Yii;
 use app\models\User;
-use yii\rest\Controller;
 
 /**
  * Class UserController
@@ -16,7 +15,7 @@ use yii\rest\Controller;
  * @package app\controllers
  * @author Jerry Hsia<xiajie9916@gmail.com>
  */
-class UserController extends Controller
+class UserController extends RestController
 {
     public $userService;
 

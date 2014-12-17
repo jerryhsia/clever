@@ -69,7 +69,10 @@ $config = [
             'cookieValidationKey' => 'app',
         ]
     ],
-    'params' => require(__DIR__ . '/params.php')
+    'params' => require(__DIR__ . '/params.php'),
+    'as AppBehavior' => [
+        'class' => 'app\behaviors\AppBehavior',
+    ]
 ];
 
 if (YII_ENV_DEV) {
