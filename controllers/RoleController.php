@@ -6,7 +6,6 @@
 
 namespace app\controllers;
 
-use app\components\Consts;
 use Yii;
 use app\models\Role;
 use yii\rest\Controller;

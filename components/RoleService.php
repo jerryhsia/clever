@@ -38,7 +38,13 @@ class RoleService
      */
     public function search(array $filter)
     {
-        $query = Role::find()->andFilterWhere($filter);
+        $query = Role::find();
+
+        if (isset($filter['id'])) {
+            $query->andFilterWhere(['id' => $filter['id']]);
+
+        }
+        
         return $query;
     }
 
