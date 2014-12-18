@@ -21,7 +21,7 @@ class RestController extends Controller
     {
         return [
             'options' => [
-                'class' => 'app\actions\OptionsAction',
+                'class' => 'app\actions\AppOptionsAction',
             ],
         ];
     }

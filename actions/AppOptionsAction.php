@@ -6,16 +6,16 @@
  */
 
 namespace app\actions;
-
 use Yii;
+use Yii\rest\OptionsAction;
 
 /**
- * Class OptionsAction
+ * Class AppOptionsAction
  *
  * @package app\actions
  * @author Jerry Hsia<xiajie9916@gmail.com>
  */
-class OptionsAction extends \yii\rest\OptionsAction
+class AppOptionsAction extends OptionsAction
 {
 
     public function run($id = null)
