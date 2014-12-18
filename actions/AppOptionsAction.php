@@ -7,7 +7,7 @@
 
 namespace app\actions;
 use Yii;
-use Yii\rest\OptionsAction;
+use yii\rest\OptionsAction;
 
 /**
  * Class AppOptionsAction
@@ -20,6 +20,7 @@ class AppOptionsAction extends OptionsAction
 
     public function run($id = null)
     {
+        parent::run($id);
         $headers = [
             'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Headers' => 'X-Access-Token, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept',
@@ -35,6 +36,5 @@ class AppOptionsAction extends OptionsAction
             $headerCollection->set($key, $value);
         }
 
-        parent::run($id);
     }
 }

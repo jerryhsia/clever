@@ -5,7 +5,6 @@
  */
 
 namespace app\controllers;
-use Yii;
 use yii\rest\Controller;
 
 
@@ -21,7 +20,7 @@ class RestController extends Controller
     {
         return [
             'options' => [
-                'class' => 'app\actions\AppOptionsAction',
+                'class' => 'app\actions\AppOptionsAction'
             ]
         ];
     }
@@ -29,5 +28,10 @@ class RestController extends Controller
     public function accessRules()
     {
         return [];
+    }
+
+    public function behaviors()
+    {
+        return parent::behaviors();
     }
 }

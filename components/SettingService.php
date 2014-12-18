@@ -66,7 +66,7 @@ class SettingService
             $setting = new Setting();
         }
         $setting->setAttributes(['name' => $name, 'value' => $value], false);
-        if ($setting->save() !== false) {
+        if ($setting->save()) {
             $this->clearCache();
         }
         return $setting;

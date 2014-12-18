@@ -51,7 +51,7 @@ class UserController extends RestController
     }
 
     /**
-     * POST /users/login
+     * POST /users/authentication
      *
      * @return LoginForm|bool
      * @throws \yii\base\InvalidConfigException

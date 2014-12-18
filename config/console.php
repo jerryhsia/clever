@@ -1,15 +1,12 @@
 <?php
 /**
- * Console config
- * Author: Jerry<xiajie9916@gmail.com>
- * Date: 2014-07-18
+ * @link http://www.haojie.me
+ * @copyright Copyright (c) 2014 Haojie studio.
  */
+
 Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
 
-$params = require(__DIR__ . '/params.php');
-$db = require(__DIR__ . '/db.php');
-
-return [
+$config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -26,7 +23,9 @@ return [
                 ],
             ],
         ],
-        'db' => $db,
+        'db' => require(__DIR__ . '/db.php'),
     ],
-    'params' => $params,
+    'params' => require(__DIR__ . '/params.php')
 ];
+
+return $config;

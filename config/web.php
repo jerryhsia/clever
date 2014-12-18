@@ -11,6 +11,9 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'en-US',
     'sourceLanguage' => 'en',
+    'as AppBehavior' => [
+        'class' => 'app\behaviors\AppBehavior'
+    ],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -38,18 +41,28 @@ $config = [
         'db' => require(__DIR__ . '/db.php'),
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'enableStrictParsing' => false,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'user',
                     'extraPatterns' => [
-                        'POST login' => 'login',
-                        'DELETE logout'=> 'logout'
+                        'POST authentication' => 'login',
+                        'DELETE authentication'=> 'logout',
+                        'OPTIONS authentication' => 'options'
                     ]
                 ],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'role']
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'role'],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'module',
+                    'extraPatterns' => [
+                        'GET {id}/fields' => 'field-index',
+                        'POST {id}/fields' => 'field-create',
+                        'PUT {id}/fields/{field_id}' => 'field-update'
+                    ]
+                ]
             ]
         ],
         'i18n' => [
@@ -67,9 +80,6 @@ $config = [
         ]
     ],
     'params' => require(__DIR__ . '/params.php'),
-    'as AppBehavior' => [
-        'class' => 'app\behaviors\AppBehavior'
-    ]
 ];
 
 if (YII_ENV_DEV) {
@@ -83,5 +93,6 @@ if (YII_ENV_DEV) {
 Yii::$container->setSingleton('UserService', 'app\components\UserService');
 Yii::$container->setSingleton('RoleService', 'app\components\RoleService');
 Yii::$container->setSingleton('SettingService', 'app\components\SettingService');
+Yii::$container->setSingleton('ModuleService', 'app\components\ModuleService');
 
 return $config;

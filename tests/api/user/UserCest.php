@@ -38,7 +38,7 @@ class UserCest
             'password' => '123456'
         ];
         $i->wantTo('Login an user');
-        $i->sendPOST('/users/login', $form);
+        $i->sendPOST('/users/authentication', $form);
         $result = $i->grabJsonResponse();
         $i->seeEquals($form['identity'], $result['username']);
     }
