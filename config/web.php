@@ -77,6 +77,9 @@ $config = [
             'enableCookieValidation' => true,
             'enableCsrfValidation' => false,
             'cookieValidationKey' => 'app',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser'
+            ]
         ]
     ],
     'params' => require(__DIR__ . '/params.php'),
