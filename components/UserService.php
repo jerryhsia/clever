@@ -16,12 +16,25 @@ use app\models\User;
 class UserService
 {
 
+    /**
+     * Save user
+     *
+     * @param User $user
+     * @param array $attributes
+     * @return bool
+     */
     public function save(User $user, array $attributes)
     {
         $user->setAttributes($attributes, false);
-        return $user->save() === false ? false : true;
+        return $user->save();
     }
 
+    /**
+     * Search user
+     *
+     * @param $filters
+     * @return \yii\db\ActiveQuery
+     */
     public function search($filters)
     {
         $query = User::find();
@@ -45,6 +58,12 @@ class UserService
         return $query;
     }
 
+    /**
+     * Load by identity
+     *
+     * @param $identity
+     * @return array|null|\yii\db\ActiveRecord
+     */
     public function loadByIdentity($identity)
     {
         return $this->search(['username' => $identity])->one();

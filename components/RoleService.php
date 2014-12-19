@@ -28,7 +28,7 @@ class RoleService
     public function save(Role $role, array $attributes)
     {
         $role->setAttributes($attributes, false);
-        return $role->save() === false ? false : true;
+        return $role->save();
     }
 
     /**
