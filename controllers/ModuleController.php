@@ -19,6 +19,7 @@ use yii\web\NotFoundHttpException;
  */
 class ModuleController extends RestController
 {
+
     /**
      * @var
      */
@@ -37,7 +38,7 @@ class ModuleController extends RestController
      * @return mixed
      * @throws NotFoundHttpException
      */
-    private function load($id)
+    private function loadModule($id)
     {
         $module = $this->moduleService->searchModule(['id' => $id])->one();
         if (!$module) {
@@ -102,6 +103,23 @@ class ModuleController extends RestController
         return $this->moduleService->delete($module);
     }
 
+
+    /**
+     * Load a field
+     *
+     * @param $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    private function loadField(Module $module, $id)
+    {
+        $field = $this->moduleService->searchField($module, ['id' => $id])->one();
+        if (!$field) {
+            throw new NotFoundHttpException(Yii::t('module', 'Field not found'));
+        }
+        return $field;
+    }
+
     /**
      * GET /modules/:id/fields
      *
@@ -110,9 +128,12 @@ class ModuleController extends RestController
     public function actionFieldIndex()
     {
         $moduleId = Yii::$app->request->getQueryParam('id');
-        $module = $this->load($moduleId);
+        $module = $this->loadModule($moduleId);
         $params = Yii::$app->request->getQueryParams();
-        return $this->moduleService->searchField($module, $params)->all();
+        unset($params['id']);
+
+        $result = $this->moduleService->searchField($module, $params)->all();
+        return $result;
     }
 
     /**
@@ -124,9 +145,26 @@ class ModuleController extends RestController
     public function actionFieldCreate()
     {
         $moduleId = Yii::$app->request->getQueryParam('id');
-        $module = $this->load($moduleId);
+        $module = $this->loadModule($moduleId);
         $attributes = Yii::$app->request->getBodyParams();
         $field = new Field();
+        $this->moduleService->saveField($module, $field, $attributes);
+        return $field;
+    }
+
+    /**
+     * PUT /modules/:id/fields/:field_id
+     *
+     * @return Field
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionFieldUpdate()
+    {
+        $moduleId = Yii::$app->request->getQueryParam('id');
+        $fieldId = Yii::$app->request->getQueryParam('field_id');
+        $module = $this->loadModule($moduleId);
+        $field = $this->loadField($module, $fieldId);
+        $attributes = Yii::$app->request->getBodyParams();
         $this->moduleService->saveField($module, $field, $attributes);
         return $field;
     }

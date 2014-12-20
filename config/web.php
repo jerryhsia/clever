@@ -50,19 +50,26 @@ $config = [
                     'extraPatterns' => [
                         'POST authentication' => 'login',
                         'DELETE authentication'=> 'logout',
-                        'OPTIONS authentication' => 'options'
+
+                        'OPTIONS <any:.*>' => 'options'
                     ]
                 ],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'role'],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'role',
+                ],
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'module',
                     'extraPatterns' => [
-                        'GET {id}/fields' => 'field-index',
-                        'POST {id}/fields' => 'field-create',
-                        'PUT {id}/fields/{field_id}' => 'field-update'
+                        'GET <id>/fields' => 'field-index',
+                        'POST <id>/fields' => 'field-create',
+                        'PUT <id>/fields/<field_id>' => 'field-update',
+
+                        'OPTIONS <any:.*>' => 'options'
                     ]
-                ]
+                ],
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>'
             ]
         ],
         'i18n' => [
@@ -74,8 +81,8 @@ $config = [
             ],
         ],
         'request' => [
-            'enableCookieValidation' => true,
-            'enableCsrfValidation' => false,
+            //'enableCookieValidation' => true,
+            //'enableCsrfValidation' => false,
             'cookieValidationKey' => 'app',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser'

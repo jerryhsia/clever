@@ -9,6 +9,12 @@ namespace app\components;
 use app\models\Field;
 use app\models\Module;
 
+/**
+ * Class ModuleService
+ *
+ * @package app\components
+ * @author Jerry Hsia<xiajie9916@gmail.com>
+ */
 class ModuleService
 {
     public function saveModule (Module $module, array $attributes)
@@ -52,6 +58,8 @@ class ModuleService
     public function searchField(Module $module, array $filter)
     {
         $query = Field::find();
+
+        $query->andFilterWhere(['module_id' => $module->id]);
 
         if (isset($filter['id'])) {
             $query->andFilterWhere(['id' => $filter['id']]);
