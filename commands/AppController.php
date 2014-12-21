@@ -7,6 +7,7 @@
 namespace app\commands;
 
 use app\components\App;
+use app\models\Module;
 use app\models\Role;
 use app\models\User;
 use Yii;
@@ -53,12 +54,16 @@ class AppController extends Controller
             'role_id'  => Role::SUPER_ROLE_ID
         ]);
 
-        $migration->insert('{{%module}}', [
+        $moduleService = Yii::$container->get('ModuleService');
+        $module = new Module();
+        $attributes = [
             'id'       => 1,
             'name'     => 'manager',
             'title'    => 'Manager',
             'is_user'  => 1,
             'role_ids' => '1'
-        ]);
+        ];
+        $rs = $moduleService->saveModule($module, $attributes);
+        var_dump($rs);
     }
 }

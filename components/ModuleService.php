@@ -6,8 +6,10 @@
 
 namespace app\components;
 
+use Yii;
 use app\models\Field;
 use app\models\Module;
+use yii\db\Migration;
 
 /**
  * Class ModuleService
@@ -20,7 +22,8 @@ class ModuleService
     public function saveModule (Module $module, array $attributes)
     {
         $module->setAttributes($attributes);
-        return $module->save();
+        $result = $module->save();
+        return $result;
     }
 
     /**
@@ -73,7 +76,14 @@ class ModuleService
     {
         $attributes['module_id'] = $module->id;
         $field->setAttributes($attributes);
-        return $field->save();
+        $result = $field->save();
+        if ($result && $field->isNewRecord) {
+            $migrate = new Migration();
+            $tables = Yii::$app->db->getSchema()->getTableSchemas();
+            if (!in_array($module->getTable(), $tables)) {
+               // $migrate->createTable($module->getTable());
+            }
+        }
     }
 
     public function deleteField (Module $module, Field $field)
