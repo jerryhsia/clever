@@ -68,7 +68,7 @@ class ModuleController extends RestController
     {
         $array = Yii::$app->request->getBodyParams();
         $module = new Module();
-        $this->moduleService->save($module, $array);
+        $this->moduleService->saveModule($module, $array);
         return $module;
     }
 
@@ -84,8 +84,8 @@ class ModuleController extends RestController
         $id = Yii::$app->request->getQueryParam('id');
         $array = Yii::$app->request->getBodyParams();
 
-        $module = $this->load($id);
-        $this->moduleService->save($module, $array);
+        $module = $this->loadModule($id);
+        $this->moduleService->saveModule($module, $array);
         return $module;
     }
 
@@ -99,8 +99,8 @@ class ModuleController extends RestController
     {
         $id = Yii::$app->request->getQueryParam('id');
 
-        $module = $this->load($id);
-        return $this->moduleService->delete($module);
+        $module = $this->loadModule($id);
+        return $this->moduleService->deleteModule($module);
     }
 
 

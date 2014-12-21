@@ -29,9 +29,8 @@ class Module extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'title', 'role_ids'], 'required'],
+            [['name', 'title'], 'required'],
             [['name', 'title'], 'string', 'max' => 50],
-            [['role_ids'], 'string', 'max' => 100]
         ];
     }
 
