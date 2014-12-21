@@ -6,8 +6,12 @@
 
 namespace app\commands;
 
+use app\components\App;
+use app\models\Role;
+use app\models\User;
 use Yii;
 use yii\console\Controller;
+use yii\db\Migration;
 
 /**
  * Class AppController
@@ -27,4 +31,34 @@ class AppController extends Controller
         }
     }
 
+    public function actionInit()
+    {
+        $migration = new Migration();
+
+        $migration->insert('{{%role}}', [
+            'id' => Role::SUPER_ROLE_ID,
+            'name' => 'Super role'
+        ]);
+
+        $migration->insert('{{%user}}', [
+            'id'       => User::SUPER_USER_ID,
+            'name'     => 'Admin',
+            'email'    => 'admin@admin.com',
+            'username' => 'admin',
+            'password' => App::createPassword('123456')
+        ]);
+
+        $migration->insert('{{%user_role}}', [
+            'user_id'  => User::SUPER_USER_ID,
+            'role_id'  => Role::SUPER_ROLE_ID
+        ]);
+
+        $migration->insert('{{%module}}', [
+            'id'       => 1,
+            'name'     => 'manager',
+            'title'    => 'Manager',
+            'is_user'  => 1,
+            'role_ids' => '1'
+        ]);
+    }
 }

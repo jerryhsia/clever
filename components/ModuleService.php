@@ -75,4 +75,9 @@ class ModuleService
         $field->setAttributes($attributes);
         return $field->save();
     }
+
+    public function deleteField (Module $module, Field $field)
+    {
+        return $field->delete() === false ? false : true;
+    }
 }

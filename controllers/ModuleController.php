@@ -73,7 +73,7 @@ class ModuleController extends RestController
     }
 
     /**
-     * PUT /modules/:id
+     * PUT /modules/<id>
      *
      * @return mixed
      * @throws NotFoundHttpException
@@ -90,7 +90,7 @@ class ModuleController extends RestController
     }
 
     /**
-     * Delete /modules/:id
+     * Delete /modules/<id>
      *
      * @return mixed
      * @throws NotFoundHttpException
@@ -121,7 +121,7 @@ class ModuleController extends RestController
     }
 
     /**
-     * GET /modules/:id/fields
+     * GET /modules/<id>/fields
      *
      * @return mixed
      */
@@ -137,7 +137,7 @@ class ModuleController extends RestController
     }
 
     /**
-     * POST /modules/:id/fields
+     * POST /modules/<id>/fields
      *
      * @return Field
      * @throws \yii\base\InvalidConfigException
@@ -153,7 +153,7 @@ class ModuleController extends RestController
     }
 
     /**
-     * PUT /modules/:id/fields/:field_id
+     * PUT /modules/<id>/fields/<field_id>
      *
      * @return Field
      * @throws \yii\base\InvalidConfigException
@@ -167,5 +167,20 @@ class ModuleController extends RestController
         $attributes = Yii::$app->request->getBodyParams();
         $this->moduleService->saveField($module, $field, $attributes);
         return $field;
+    }
+
+    /**
+     * DELETE /modules/<id>/fields/<field_id>
+     *
+     * @return Field
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionFieldDelete()
+    {
+        $moduleId = Yii::$app->request->getQueryParam('id');
+        $fieldId = Yii::$app->request->getQueryParam('field_id');
+        $module = $this->loadModule($moduleId);
+        $field = $this->loadField($module, $fieldId);
+        return $this->moduleService->deleteField($module, $field);
     }
 }
