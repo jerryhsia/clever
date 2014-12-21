@@ -36,7 +36,8 @@
     "extra": {
         "writable": [
             "runtime",
-            "web/assets"
+            "web/assets",
+            "models"
         ],
         "executable": [
             "yii",

@@ -70,6 +70,18 @@ $config = [
                         'OPTIONS <any:.*>' => 'options'
                     ]
                 ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'data',
+                    'patterns' => [
+                        'GET <module_name>' => 'index',
+                        'POST <module_name>' => 'create',
+                        'PUT <module_name>/<id>' => 'update',
+                        'DELETE <module_name>/<id>' => 'delete',
+
+                        'OPTIONS <any:.*>' => 'options'
+                    ]
+                ],
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>'
             ]
         ],
@@ -105,5 +117,6 @@ Yii::$container->setSingleton('UserService', 'app\components\UserService');
 Yii::$container->setSingleton('RoleService', 'app\components\RoleService');
 Yii::$container->setSingleton('SettingService', 'app\components\SettingService');
 Yii::$container->setSingleton('ModuleService', 'app\components\ModuleService');
+Yii::$container->setSingleton('DataService', 'app\components\DataService');
 
 return $config;

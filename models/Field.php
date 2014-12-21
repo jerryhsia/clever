@@ -63,7 +63,7 @@ class Field extends \yii\db\ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $sql = Yii::$app->db->queryBuilder->addColumn($this->module->getTable(), $this->name, $this->getColumnType());
+            $sql = Yii::$app->db->queryBuilder->addColumn($this->module->getTableName(), $this->name, $this->getColumnType());
             Yii::$app->db->createCommand($sql)->execute();
         }
         parent::afterSave($insert, $changedAttributes);
@@ -71,7 +71,7 @@ class Field extends \yii\db\ActiveRecord
 
     public function afterDelete()
     {
-        $sql = Yii::$app->db->queryBuilder->dropColumn($this->module->getTable(), $this->name);
+        $sql = Yii::$app->db->queryBuilder->dropColumn($this->module->getTableName(), $this->name);
         Yii::$app->db->createCommand($sql)->execute();
         parent::afterDelete();
     }

@@ -1,0 +1,25 @@
+<?php
+/**
+ * @link http://www.haojie.me
+ * @copyright Copyright (c) 2014 Haojie studio.
+ */
+
+namespace app\models;
+
+use Yii;
+use yii\db\ActiveRecord;
+
+/**
+ * {class_name} model
+ */
+class {class_name} extends ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{table_name}';
+    }
+
+}
