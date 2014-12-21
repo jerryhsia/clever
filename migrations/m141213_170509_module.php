@@ -30,7 +30,7 @@ class m141213_170509_module extends Migration
             'module_id' => 'int(11)     UNSIGNED NOT NULL',
             'name'      => 'varchar(50) NOT NULL',
             'title'     => 'varchar(50) NOT NULL',
-            'type'      => 'varchar(50) NOT NULL',
+            'input'     => 'varchar(50) NOT NULL',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
 

@@ -11,7 +11,7 @@ use Yii;
  * @property integer $module_id
  * @property string $name
  * @property string $title
- * @property string $type
+ * @property string $input
  */
 class Field extends \yii\db\ActiveRecord
 {
@@ -29,9 +29,9 @@ class Field extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['module_id', 'name', 'title', 'type'], 'required'],
+            [['module_id', 'name', 'title', 'input'], 'required'],
             [['module_id'], 'integer'],
-            [['name', 'title', 'type'], 'string', 'max' => 50]
+            [['name', 'title', 'input'], 'string', 'max' => 50]
         ];
     }
 
@@ -45,7 +45,7 @@ class Field extends \yii\db\ActiveRecord
             'module_id' => Yii::t('field', 'Module ID'),
             'name'      => Yii::t('field', 'Name'),
             'title'     => Yii::t('field', 'Title'),
-            'type'      => Yii::t('field', 'Type')
+            'inupt'      => Yii::t('field', 'Input')
         ];
     }
 }
