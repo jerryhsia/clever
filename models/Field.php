@@ -11,6 +11,7 @@ use Yii;
  * @property integer $module_id
  * @property string $name
  * @property string $title
+ * @property string $type
  */
 class Field extends \yii\db\ActiveRecord
 {
@@ -19,7 +20,7 @@ class Field extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'clever_field';
+        return '{{%field}}';
     }
 
     /**
@@ -28,9 +29,9 @@ class Field extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['module_id', 'name', 'title'], 'required'],
+            [['module_id', 'name', 'title', 'type'], 'required'],
             [['module_id'], 'integer'],
-            [['name', 'title'], 'string', 'max' => 50]
+            [['name', 'title', 'type'], 'string', 'max' => 50]
         ];
     }
 
@@ -40,10 +41,11 @@ class Field extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('field', 'ID'),
+            'id'        => Yii::t('field', 'ID'),
             'module_id' => Yii::t('field', 'Module ID'),
-            'name' => Yii::t('field', 'Name'),
-            'title' => Yii::t('field', 'Title'),
+            'name'      => Yii::t('field', 'Name'),
+            'title'     => Yii::t('field', 'Title'),
+            'type'      => Yii::t('field', 'Type')
         ];
     }
 }

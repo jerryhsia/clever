@@ -3,10 +3,9 @@
  * @link http://www.haojie.me
  * @copyright Copyright (c) 2014 Haojie studio.
  */
+use yii\db\Migration;
 
-use app\migrations\BaseMigration;
-
-class m130524_201443_setting extends BaseMigration
+class m138791_758283_setting extends Migration
 {
     public function up()
     {

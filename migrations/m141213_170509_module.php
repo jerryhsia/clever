@@ -4,9 +4,9 @@
  * @copyright Copyright (c) 2014 Haojie studio.
  */
 
-use app\migrations\BaseMigration;
+use yii\db\Migration;
 
-class m141213_170509_module extends BaseMigration
+class m141213_170509_module extends Migration
 {
     public function up()
     {
@@ -30,16 +30,9 @@ class m141213_170509_module extends BaseMigration
             'module_id' => 'int(11)     UNSIGNED NOT NULL',
             'name'      => 'varchar(50) NOT NULL',
             'title'     => 'varchar(50) NOT NULL',
+            'type'      => 'varchar(50) NOT NULL',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
-
-        $this->insert('{{%module}}', [
-            'id'       => 1,
-            'name'     => 'manager',
-            'title'    => 'Manager',
-            'is_user'  => 1,
-            'role_ids' => '1'
-        ]);
 
     }
 

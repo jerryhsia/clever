@@ -7,3 +7,5 @@
 
 ./tests/unit/yii app/clear
 ./tests/unit/yii migrate
+
+./yii app/init

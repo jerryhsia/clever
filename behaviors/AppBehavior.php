@@ -35,10 +35,13 @@ class AppBehavior extends Behavior
     {
         $headers = [
             'Access-Control-Allow-Origin'      => '*',
-            'Access-Control-Allow-Methods'     => 'GET, POST, PUT, DELETE',
+            'Access-Control-Allow'             => 'GET, POST, PUT, DELETE',
             'Access-Control-Allow-Credentials' => 'true',
-            'Access-Control-Expose-Headers'    => 'X-Access-Token, X-Pagination-Total-Count, X-Pagination-Page-Count, X-Pagination-Per-Page, X-Pagination-Current-Page, Link'
         ];
+
+        if (!YII_DEBUG) {
+            $headers['Access-Control-Max-Age'] = 24 * 3600;
+        }
 
         $headerCollection = Yii::$app->response->getHeaders();
         foreach ($headers as $key => $value) {
