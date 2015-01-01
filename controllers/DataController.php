@@ -1,8 +1,5 @@
 <?php
-/**
- * @link http://www.haojie.me
- * @copyright Copyright (c) 2014 Haojie studio.
- */
+
 
 namespace app\controllers;
 
@@ -48,6 +45,23 @@ class DataController extends RestController
     }
 
     /**
+     * Load a data
+     *
+     * @param $module
+     * @param $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    private function loadData($module, $id)
+    {
+        $data = $this->dataService->search($module)->andWhere(['id' => $id])->one();
+        if (!$data) {
+            throw new NotFoundHttpException(Yii::t('data', 'Data not found'));
+        }
+        return $data;
+    }
+
+    /**
      * GET /datas/<module_name>
      *
      * @return mixed
@@ -68,9 +82,9 @@ class DataController extends RestController
      */
     public function actionCreate()
     {
-        $array = Yii::$app->request->getBodyParams();
         $moduleName = Yii::$app->request->getQueryParam('module_name');
         $module = $this->loadModule($moduleName);
+        $array = Yii::$app->request->getBodyParams();
 
         $className = $module->getFullClassName();
         $model = new $className();
@@ -86,26 +100,30 @@ class DataController extends RestController
      */
     public function actionUpdate()
     {
-        $id = Yii::$app->request->getQueryParam('id');
+        $moduleName = Yii::$app->request->getQueryParam('module_name');
         $array = Yii::$app->request->getBodyParams();
+        $id = Yii::$app->request->getQueryParam('id');
 
-        $module = $this->loadModule($id);
-        $this->moduleService->saveModule($module, $array);
-        return $module;
+        $module = $this->loadModule($moduleName);
+        $model = $this->loadData($module, $id);
+        $this->dataService->save($module, $model, $array);
+        return $model;
     }
 
     /**
-     * Delete /modules/<id>
+     * Delete /datas/<module_name>/<id>
      *
      * @return mixed
      * @throws NotFoundHttpException
      */
     public function actionDelete()
     {
+        $moduleName = Yii::$app->request->getQueryParam('module_name');
         $id = Yii::$app->request->getQueryParam('id');
 
-        $module = $this->loadModule($id);
-        return $this->moduleService->deleteModule($module);
+        $module = $this->loadModule($moduleName);
+        $model = $this->loadData($module, $id);
+        return $this->dataService->delete($module, $model);
     }
 
 

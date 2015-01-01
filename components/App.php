@@ -1,8 +1,5 @@
 <?php
-/**
- * @link http://www.haojie.me
- * @copyright Copyright (c) 2014 Haojie studio.
- */
+
 namespace app\components;
 use Yii;
 
@@ -16,5 +13,12 @@ class App
     public static function createPassword($password)
     {
         return md5(sha1($password.'_app'));
+    }
+
+    public static function dump($data)
+    {
+        echo '<pre>';
+        var_dump($data);
+        echo '</pre>';
     }
 }

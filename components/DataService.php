@@ -1,8 +1,5 @@
 <?php
-/**
- * @link http://www.haojie.me
- * @copyright Copyright (c) 2014 Haojie studio.
- */
+
 
 namespace app\components;
 
@@ -18,10 +15,15 @@ class DataService
         return $model;
     }
 
-    public function search(Module $module, array $filters)
+    public function search(Module $module, array $filters = [])
     {
         $className = $module->getFullClassName();
         $query = $className::find();
         return $query;
+    }
+
+    public function delete(Module $module, $model)
+    {
+        return $model->delete() === false ? false : true;
     }
 }

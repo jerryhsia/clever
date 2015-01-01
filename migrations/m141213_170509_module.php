@@ -1,8 +1,4 @@
 <?php
-/**
- * @link http://www.haojie.me
- * @copyright Copyright (c) 2014 Haojie studio.
- */
 
 use yii\db\Migration;
 
@@ -21,16 +17,19 @@ class m141213_170509_module extends Migration
             'name'     => 'varchar(50) NOT NULL',
             'title'    => 'varchar(50) NOT NULL',
             'is_user'  => 'tinyint(1)  NOT NULL DEFAULT 0',
-            'role_ids' => 'varchar(100)    NULL',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
 
         $this->createTable('{{%field}}', [
             'id'        => 'int(11)     UNSIGNED NOT NULL AUTO_INCREMENT',
             'module_id' => 'int(11)     UNSIGNED NOT NULL',
+            'is_default'=> 'tinyint(1)  NOT NULL DEFAULT 0',
+            'is_null'   => 'tinyint(1)  NOT NULL DEFAULT 1',
             'name'      => 'varchar(50) NOT NULL',
             'title'     => 'varchar(50) NOT NULL',
             'input'     => 'varchar(50) NOT NULL',
+            'type'      => 'varchar(50) NOT NULL',
+            'size'      => 'int(11)     NOT NULL DEFAULT 200',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
 

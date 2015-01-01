@@ -1,8 +1,5 @@
 <?php
-/**
- * @link http://www.haojie.me
- * @copyright Copyright (c) 2014 Haojie studio.
- */
+
 
 namespace app\components;
 
@@ -21,7 +18,7 @@ class ModuleService
 {
     public function saveModule (Module $module, array $attributes)
     {
-        $module->setAttributes($attributes);
+        $module->setAttributes($attributes, false);
         $result = $module->save();
         return $result;
     }

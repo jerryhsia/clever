@@ -1,8 +1,5 @@
 <?php
-/**
- * @link http://www.haojie.me
- * @copyright Copyright (c) 2014 Haojie studio.
- */
+
 
 namespace app\commands;
 
@@ -60,10 +57,8 @@ class AppController extends Controller
             'id'       => 1,
             'name'     => 'manager',
             'title'    => 'Manager',
-            'is_user'  => 1,
-            'role_ids' => '1'
+            'is_user'  => 1
         ];
         $rs = $moduleService->saveModule($module, $attributes);
-        var_dump($rs);
     }
 }

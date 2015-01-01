@@ -3,7 +3,7 @@
 namespace app\models;
 
 use Yii;
-use yii\db\Migration;
+use yii\web\ForbiddenHttpException;
 
 /**
  * This is the model class for table "module".
@@ -11,10 +11,12 @@ use yii\db\Migration;
  * @property integer $id
  * @property string $name
  * @property string $title
- * @property array $role_ids
+ * @property string $is_user
  */
 class Module extends \yii\db\ActiveRecord
 {
+    const DEFAULT_MODULE_ID = 1;
+
     /**
      * @inheritdoc
      */
@@ -43,8 +45,19 @@ class Module extends \yii\db\ActiveRecord
             'id' => Yii::t('module', 'ID'),
             'name' => Yii::t('module', 'Name'),
             'title' => Yii::t('module', 'Title'),
-            'role_ids' => Yii::t('module', 'Role Ids'),
+            'is_user' => Yii::t('module', 'User module'),
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!$insert) {
+            $fields = ['name', 'is_user'];
+            foreach ($fields as $field) {
+                $this->setAttribute($field, $this->getOldAttribute($field));
+            }
+        }
+        return parent::beforeSave($insert);
     }
 
 
@@ -86,14 +99,89 @@ class Module extends \yii\db\ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $sql = Yii::$app->db->queryBuilder->createTable($this->getTableName(), [
+            $fields = [
                 'id' => 'int(11)     UNSIGNED NOT NULL AUTO_INCREMENT',
                 'PRIMARY KEY `id`(`id`)'
-            ]);
+            ];
+            $sql = Yii::$app->db->queryBuilder->createTable($this->getTableName(), $fields);
             Yii::$app->db->createCommand($sql)->execute();
             $this->createClassFile();
+
+            $field = new Field();
+            $field->setAttributes([
+                'module_id' => $this->id,
+                'is_default' => 1,
+                'is_null' => 0,
+                'name' => 'id',
+                'title' => 'ID',
+                'input' => Field::INPUT_INPUT,
+                'type'  => 'int',
+                'size'  => 11
+            ], false);
+            $field->save();
+
+            if ($this->is_user) {
+                $this->createUserFields();
+            }
+
         }
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    protected function createUserFields()
+    {
+        $userFields = [
+            [
+                'name' => 'user_id',
+                'type' => 'int',
+                'size' => 11,
+                'is_null' => 0,
+            ],
+            [
+                'name' => 'name',
+                'type' => 'varchar',
+                'size' => 50,
+                'is_null' => 0
+            ],
+            [
+                'name' => 'username',
+                'type' => 'varchar',
+                'size' => 50,
+                'is_null' => 0
+            ],
+            [
+                'name' => 'password',
+                'type' => 'varchar',
+                'size' => 32,
+                'is_null' => 0
+            ],
+            [
+                'name' => 'email',
+                'type' => 'varchar',
+                'size' => 50,
+                'is_null' => 0
+            ]
+        ];
+        $userLabels = (new User())->attributeLabels();
+        foreach ($userFields as $fieldAttributes) {
+            $field = new Field();
+            $fieldAttributes += [
+                'module_id' => $this->id,
+                'title'     => isset($userLabels[$fieldAttributes['name']]) ? $userLabels[$fieldAttributes['name']] : ucfirst($fieldAttributes['name']),
+                'input'     => Field::INPUT_INPUT,
+                'is_default'=> Field::DEFAULT_FIELD
+            ];
+            $field->setAttributes($fieldAttributes, false);
+            $field->save();
+            var_dump($field->getErrors());
+        }
+    }
+
+    public function beforeDelete()
+    {
+        if ($this->id == self::DEFAULT_MODULE_ID) {
+            throw new ForbiddenHttpException(Yii::t('module', 'Default module cannot be deleted'));
+        }
     }
 
     public function afterDelete ()

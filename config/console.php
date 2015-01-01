@@ -1,8 +1,5 @@
 <?php
-/**
- * @link http://www.haojie.me
- * @copyright Copyright (c) 2014 Haojie studio.
- */
+
 
 Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
 
@@ -24,6 +21,14 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
+        'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => __DIR__ . '/../messages',
+                ]
+            ],
+        ]
     ],
     'params' => require(__DIR__ . '/params.php')
 ];
