@@ -66,21 +66,16 @@ class ModuleService
 
         }
 
+        $query->orderBy(['sort' => SORT_ASC, 'id' => SORT_ASC]);
+
         return $query;
     }
 
     public function saveField (Module $module, Field $field, array $attributes)
     {
         $attributes['module_id'] = $module->id;
-        $field->setAttributes($attributes);
-        $result = $field->save();
-        if ($result && $field->isNewRecord) {
-            $migrate = new Migration();
-            $tables = Yii::$app->db->getSchema()->getTableSchemas();
-            if (!in_array($module->getTable(), $tables)) {
-               // $migrate->createTable($module->getTable());
-            }
-        }
+        $field->setAttributes($attributes, false);
+        return $field->save();
     }
 
     public function deleteField (Module $module, Field $field)

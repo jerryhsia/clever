@@ -173,7 +173,6 @@ class Module extends \yii\db\ActiveRecord
             ];
             $field->setAttributes($fieldAttributes, false);
             $field->save();
-            var_dump($field->getErrors());
         }
     }
 
