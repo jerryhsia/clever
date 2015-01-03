@@ -33,6 +33,8 @@ class Module extends \yii\db\ActiveRecord
         return [
             [['name', 'title'], 'required'],
             [['name', 'title'], 'string', 'max' => 50],
+            ['name', 'filter', 'filter' => 'strtolower'],
+            ['name', 'validateName']
         ];
     }
 
@@ -47,6 +49,19 @@ class Module extends \yii\db\ActiveRecord
             'title' => Yii::t('module', 'Title'),
             'is_user' => Yii::t('module', 'User module'),
         ];
+    }
+
+    public function validateName()
+    {
+        if (!$this->hasErrors() &&
+            !preg_match('/^[a-z]+$/i', $this->name) &&
+            !preg_match('/^[a-z]+[_]{1}[a-z]+$/i', $this->name)
+        ) {
+            $this->addError('name',
+                Yii::t('module', '{attribute} format error',
+                    ['attribute' => Yii::t('module', 'Name')])
+            );
+        }
     }
 
     public function beforeSave($insert)
@@ -112,6 +127,7 @@ class Module extends \yii\db\ActiveRecord
                 'module_id' => $this->id,
                 'is_default' => 1,
                 'is_null' => 0,
+                'is_list' => 1,
                 'name' => 'id',
                 'title' => 'ID',
                 'input' => Field::INPUT_INPUT,
@@ -135,31 +151,34 @@ class Module extends \yii\db\ActiveRecord
                 'name' => 'user_id',
                 'type' => 'int',
                 'size' => 11,
-                'is_null' => 0,
+                'is_list' => 1
             ],
             [
                 'name' => 'name',
                 'type' => 'varchar',
                 'size' => 50,
-                'is_null' => 0
+                'is_null' => 0,
+                'is_list' => 1,
+                'is_search' => 1,
             ],
             [
                 'name' => 'username',
                 'type' => 'varchar',
                 'size' => 50,
-                'is_null' => 0
+                'is_list' => 1,
+                'is_search' => 1
             ],
             [
                 'name' => 'password',
                 'type' => 'varchar',
                 'size' => 32,
-                'is_null' => 0
             ],
             [
                 'name' => 'email',
                 'type' => 'varchar',
                 'size' => 50,
-                'is_null' => 0
+                'is_list' => 1,
+                'is_search' => 1
             ]
         ];
         $userLabels = (new User())->attributeLabels();
@@ -181,6 +200,7 @@ class Module extends \yii\db\ActiveRecord
         if ($this->id == self::DEFAULT_MODULE_ID) {
             throw new ForbiddenHttpException(Yii::t('module', 'Default module cannot be deleted'));
         }
+        return true;
     }
 
     public function afterDelete ()

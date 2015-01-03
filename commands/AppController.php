@@ -9,7 +9,6 @@ use app\models\Role;
 use app\models\User;
 use Yii;
 use yii\console\Controller;
-use yii\db\Migration;
 
 /**
  * Class AppController
@@ -27,6 +26,15 @@ class AppController extends Controller
             Yii::$app->db->createCommand($sql)->execute();
             $this->stdout("Deleted {$table}\n");
         }
+
+        $modelsDir = Yii::getAlias('@app').DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR;
+        $dirHandle = opendir($modelsDir);
+        while ($file = readdir($dirHandle)) {
+            if (substr($file, 0, 4) == 'Data') {
+                @unlink($modelsDir.$file);
+            }
+        }
+        closedir($dirHandle);
     }
 
     public function actionInit()

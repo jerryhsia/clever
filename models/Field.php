@@ -53,18 +53,39 @@ class Field extends \yii\db\ActiveRecord
             ['size', 'filter', 'filter' => function() {
                 return $this->size ? $this->size : 200;
             }],
-            ['type', 'filter', 'filter' => function() {
-                return $this->type ? $this->type : self::INPUT_INPUT;
+            ['input', 'filter', 'filter' => function() {
+                return $this->input ? $this->input : self::INPUT_INPUT;
             }],
-            [['name', 'title', 'input'], 'string', 'max' => 50]
+            ['type', 'filter', 'filter' => function() {
+                return $this->type ? $this->type : 'varchar';
+            }],
+            [['name', 'title', 'input'], 'string', 'max' => 50],
+            ['name', 'validateName'],
+            ['name', 'unique', 'when' => function() {
+                return $this->name && !$this->hasErrors();
+            }]
         ];
+    }
+
+    public function validateName()
+    {
+        if (!$this->hasErrors() &&
+            !preg_match('/^[a-z]+$/i', $this->name) &&
+            !preg_match('/^[a-z]+[_]{1}[a-z]+$/i', $this->name)
+        ) {
+            $this->addError('name',
+                Yii::t('field', '{attribute} format error',
+                    ['attribute' => Yii::t('field', 'Name')])
+            );
+        }
     }
 
     public function fields()
     {
         return parent::fields() + [
             'can_edit' => 'canEdit',
-            'can_delete' => 'canDelete'
+            'can_delete' => 'canDelete',
+            'is_user_field' => 'isUserField'
         ];
     }
 
@@ -147,5 +168,10 @@ class Field extends \yii\db\ActiveRecord
             $fields = array_merge($fields, ['user_id', 'name', 'username', 'password', 'email']);
         }
         return !in_array($this->name, $fields);
+    }
+
+    public function getIsUserField()
+    {
+        return in_array($this->name, ['name', 'username', 'password', 'email']);
     }
 }
