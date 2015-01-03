@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\App;
 use Yii;
 use yii\db\ActiveRecord;
+use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 
 /**
@@ -33,16 +34,28 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['name', 'email', 'username', 'password'], 'required'],
-            [['id'], 'integer'],
-            [['name', 'email'], 'string', 'max' => 50],
-            [['password'], 'string', 'max' => 32],
-            ['password', 'filter', 'filter' => function() {
-                return App::createPassword($this->password);
-            }, 'when' => function() {
-                return $this->id > 0;
+            [['name', 'email', 'username'], 'required'],
+            ['password', 'required', 'when' => function() {
+                return $this->isNewRecord;
             }],
+            [['name', 'email'], 'string', 'max' => 50],
+            ['username', 'unique', 'when' => function() {
+                return !empty($this->username);
+            }],
+            ['email', 'unique', 'when' => function() {
+                return !empty($this->email);
+            }]
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if ($this->password) {
+            $this->password = App::createPassword($this->password);
+        } else {
+            $this->password = $this->getOldAttribute('password');
+        }
+        return parent::beforeSave($insert);
     }
 
     /**
@@ -128,5 +141,13 @@ class User extends ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
+    }
+
+    public function beforeDelete()
+    {
+        if ($this->id == self::SUPER_USER_ID) {
+            throw new ForbiddenHttpException(Yii::t('user', 'Super user cannot be deleted'));
+        }
+        return true;
     }
 }

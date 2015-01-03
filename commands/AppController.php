@@ -31,27 +31,17 @@ class AppController extends Controller
 
     public function actionInit()
     {
-        $migration = new Migration();
+        $roleService = Yii::$container->get('RoleService');
+        $moduleService = Yii::$container->get('ModuleService');
+        $dataService = Yii::$container->get('DataService');
 
-        $migration->insert('{{%role}}', [
+        $role = new Role();
+        $attributes = [
             'id' => Role::SUPER_ROLE_ID,
             'name' => 'Super role'
-        ]);
+        ];
+        $roleService->save($role, $attributes);
 
-        $migration->insert('{{%user}}', [
-            'id'       => User::SUPER_USER_ID,
-            'name'     => 'Admin',
-            'email'    => 'admin@admin.com',
-            'username' => 'admin',
-            'password' => App::createPassword('123456')
-        ]);
-
-        $migration->insert('{{%user_role}}', [
-            'user_id'  => User::SUPER_USER_ID,
-            'role_id'  => Role::SUPER_ROLE_ID
-        ]);
-
-        $moduleService = Yii::$container->get('ModuleService');
         $module = new Module();
         $attributes = [
             'id'       => 1,
@@ -59,6 +49,18 @@ class AppController extends Controller
             'title'    => 'Manager',
             'is_user'  => 1
         ];
-        $rs = $moduleService->saveModule($module, $attributes);
+        $moduleService->saveModule($module, $attributes);
+
+        $class = $module->getFullClassName();
+        $model = new $class();
+        $attributes = [
+            'id'       => User::SUPER_USER_ID,
+            'name'     => 'Admin',
+            'email'    => 'admin@admin.com',
+            'username' => 'admin',
+            'password' => App::createPassword('123456'),
+            'role_ids' => [Role::SUPER_ROLE_ID]
+        ];
+        $dataService->save($module, $model, $attributes);
     }
 }

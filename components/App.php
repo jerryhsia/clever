@@ -2,6 +2,7 @@
 
 namespace app\components;
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * Class App
@@ -20,5 +21,14 @@ class App
         echo '<pre>';
         var_dump($data);
         echo '</pre>';
+    }
+
+    public static function copyErrors(ActiveRecord $fromModel, ActiveRecord $toModel)
+    {
+        foreach ($fromModel->getErrors() as $field => $errors) {
+            foreach ($errors as $error) {
+                $toModel->addError($field, $error);
+            }
+        }
     }
 }

@@ -131,6 +131,9 @@ class Field extends \yii\db\ActiveRecord
     public function getCanEdit()
     {
         $fields = ['id'];
+        if ($this->module->is_user) {
+            $fields = array_merge($fields, ['user_id']);
+        }
         return !in_array($this->name, $fields);
     }
 
