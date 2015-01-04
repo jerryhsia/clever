@@ -6,6 +6,7 @@ namespace app\controllers;
 use app\models\Field;
 use Yii;
 use app\models\Module;
+use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -71,7 +72,13 @@ class DataController extends RestController
         $moduleName = Yii::$app->request->getQueryParam('module_name');
         $module = $this->loadModule($moduleName);
         $params = Yii::$app->request->getQueryParams();
-        return $this->dataService->search($module, $params)->all();
+        $query = $this->dataService->search($module, $params);
+        return new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->request->getQueryParam('per_page')
+            ]
+        ]);
     }
 
     /**

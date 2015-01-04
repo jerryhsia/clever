@@ -14,8 +14,6 @@ use yii\db\ActiveRecord;
  */
 class Role extends ActiveRecord
 {
-    const SUPER_ROLE_ID = 1;
-
     /**
      * @inheritdoc
      */
@@ -43,5 +41,18 @@ class Role extends ActiveRecord
             'id' => Yii::t('role', 'ID'),
             'name' => Yii::t('role', 'Name')
         ];
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['is_super'] = 'isSuper';
+
+        return $fields;
+    }
+
+    public function getIsSuper()
+    {
+        return in_array($this->id, [1]);
     }
 }

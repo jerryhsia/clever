@@ -21,6 +21,8 @@ class m130524_201442_user extends Migration
 
         $this->createTable('{{%user}}', [
             'id'       => 'int(11)     UNSIGNED NOT NULL AUTO_INCREMENT',
+            'module_id'=> 'int(11) UNSIGNED NOT NULL',
+            'data_id'  => 'int(11) UNSIGNED NOT NULL',
             'name'     => 'varchar(50) NOT NULL',
             'username' => 'varchar(50) NOT NULL',
             'email'    => 'varchar(50) NOT NULL',

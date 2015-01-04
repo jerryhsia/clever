@@ -14,6 +14,30 @@ use yii\web\ForbiddenHttpException;
  */
 class RoleService
 {
+    private static $_roles = false;
+
+    public function getAll()
+    {
+        if (self::$_roles === false) {
+            self::$_roles = Role::find()->all();
+        }
+        return self::$_roles;
+    }
+
+    public function findById($id)
+    {
+        foreach ($this->getAll() as $role) {
+            if ($role->id == $id) {
+                return $role;
+            }
+        }
+        return null;
+    }
+
+    private function clearCache()
+    {
+        self::$_roles = false;
+    }
 
     /**
      * Save role
@@ -25,25 +49,13 @@ class RoleService
     public function save(Role $role, array $attributes)
     {
         $role->setAttributes($attributes, false);
-        return $role->save();
-    }
-
-    /**
-     * Search role
-     *
-     * @return mixed
-     */
-    public function search(array $filter)
-    {
-        $query = Role::find();
-
-        if (isset($filter['id'])) {
-            $query->andFilterWhere(['id' => $filter['id']]);
-
+        $result = $role->save();
+        if ($result) {
+            $this->clearCache();
         }
-
-        return $query;
+        return $result;
     }
+
 
     /**
      * Delete role
@@ -52,9 +64,13 @@ class RoleService
      */
     public function delete(Role $role)
     {
-        if ($role->id == Role::SUPER_ROLE_ID) {
+        if ($role->is_super) {
             throw new ForbiddenHttpException(Yii::t('role', 'Super role can\'t be deleted'));
         }
-        return $role->delete() === false ? false : true;
+        $result = $role->delete() === false ? false : true;
+        if ($result) {
+            $this->clearCache();
+        }
+        return $result;
     }
 }

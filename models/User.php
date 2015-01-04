@@ -75,11 +75,6 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public function getRoles() {
-        $query = $this->hasMany(UserRole::className(), ['user_id' => 'id']);
-        return $query;
-    }
-
     /**
      * Finds an identity by the given ID.
      * @param string|integer $id the ID to be looked for
@@ -143,13 +138,5 @@ class User extends ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
-    }
-
-    public function beforeDelete()
-    {
-        if ($this->id == self::SUPER_USER_ID) {
-            throw new ForbiddenHttpException(Yii::t('user', 'Super user cannot be deleted'));
-        }
-        return true;
     }
 }

@@ -25,12 +25,10 @@ class Field extends \yii\db\ActiveRecord
 
     const INPUT_INPUT = 'input';
     const INPUT_TEXTAREA = 'textarea';
-    const INPUT_RADIO = 'radio';
-    const INPUT_CHECKBOX = 'checkbox';
     const INPUT_SELECT = 'select';
+    const INPUT_MULTIPLE_SELECT = 'multiple_select';
     const INPUT_DATE = 'date';
-    const INPUT_FILE = 'file';
-    const INPUT_MULTIPLE_FILE = 'multiple_file';
+    const INPUT_MULTIPLE_FILE = 'files';
 
     const DEFAULT_FIELD = 1;
 

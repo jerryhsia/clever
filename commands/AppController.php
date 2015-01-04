@@ -45,7 +45,7 @@ class AppController extends Controller
 
         $role = new Role();
         $attributes = [
-            'id' => Role::SUPER_ROLE_ID,
+            'id' => 1,
             'name' => 'Super role'
         ];
         $roleService->save($role, $attributes);
@@ -68,12 +68,12 @@ class AppController extends Controller
         $class = $module->getFullClassName();
         $model = new $class();
         $attributes = [
-            'id'       => User::SUPER_USER_ID,
+            'id'       => 1,
             'name'     => 'Admin',
             'email'    => 'admin@admin.com',
             'username' => 'admin',
             'password' => 123456,
-            'role_ids' => [Role::SUPER_ROLE_ID]
+            'role_ids' => [1]
         ];
         $dataService->save($module, $model, $attributes);
     }

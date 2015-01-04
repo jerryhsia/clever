@@ -1,8 +1,8 @@
 <?php
 
-
 namespace app\components;
 
+use app\models\Base;
 use Yii;
 use app\models\Module;
 use app\models\User;
@@ -10,29 +10,18 @@ use yii\db\ActiveRecord;
 
 class DataService
 {
-    public function save(Module $module, ActiveRecord $model, array $attributes)
+    public function save(Module $module, Base $model, array $attributes)
     {
-        if ($module->is_user) {
-            $userService = Yii::$container->get('UserService');
-            $userAttributes = $attributes;
-            unset($userAttributes['user_id'], $userAttributes['id']);
-            $user = null;
-            if ($model->isNewRecord) {
-                $user = new User();
-            } else {
-                $user = $userService->findById($model->user_id);
-            }
-
-            if ($userService->save($user, $userAttributes)) {
-                $attributes['user_id'] = $user->id;
-                $attributes['password'] = $user->password;
-            } else {
-                App::copyErrors($user, $model);
-                return false;
-            }
-        }
+        $transaction = Yii::$app->db->beginTransaction();
+        $model->module = $module;
         $model->setAttributes($attributes, false);
-        return $model->save();
+        $result = $model->save();
+        if ($result) {
+            $transaction->commit();
+        } else {
+            $transaction->rollBack();
+        }
+        return $result;
     }
 
     public function search(Module $module, array $filters = [])
@@ -44,9 +33,13 @@ class DataService
 
     public function delete(Module $module, ActiveRecord $model)
     {
-        if ($module->is_user) {
-            $model->user->delete();
+        $transaction = Yii::$app->db->beginTransaction();
+        $result = $model->delete() === false ? false : true;
+        if ($result) {
+            $transaction->commit();
+        } else {
+            $transaction->rollBack();
         }
-        return $model->delete() === false ? false : true;
+        return $result;
     }
 }

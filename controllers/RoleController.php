@@ -35,7 +35,7 @@ class RoleController extends RestController
      */
     private function load($id)
     {
-        $role = $this->roleService->search(['id' => $id])->one();
+        $role = $this->roleService->findById($id);
         if (!$role) {
             throw new NotFoundHttpException(Yii::t('role', 'Role not found'));
         }
@@ -49,8 +49,7 @@ class RoleController extends RestController
      */
     public function actionIndex()
     {
-        $params = Yii::$app->request->getQueryParams();
-        return $this->roleService->search($params)->all();
+        return $this->roleService->getAll();
     }
 
     /**
