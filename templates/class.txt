@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use Yii;
-use yii\db\ActiveRecord;
-use app\models\User;
+use app\models\Base;
 
 /**
  * {class_name} model
  */
-class {class_name} extends ActiveRecord
+class {class_name} extends Base
 {
     /**
      * @inheritdoc
@@ -17,10 +15,5 @@ class {class_name} extends ActiveRecord
     public static function tableName()
     {
         return '{table_name}';
-    }
-
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 }

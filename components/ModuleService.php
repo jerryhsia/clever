@@ -34,7 +34,10 @@ class ModuleService
 
         if (isset($filter['id'])) {
             $query->andFilterWhere(['id' => $filter['id']]);
+        }
 
+        if (isset($filter['name'])) {
+            $query->andFilterWhere(['name' => $filter['name']]);
         }
 
         return $query;

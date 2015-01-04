@@ -179,17 +179,24 @@ class Module extends \yii\db\ActiveRecord
                 'size' => 50,
                 'is_list' => 1,
                 'is_search' => 1
+            ],
+            [
+                'name' => 'role_ids',
+                'type' => 'varchar',
+                'size' => 50,
+                'is_list' => 1,
+                'is_search' => 1
             ]
         ];
         $userLabels = (new User())->attributeLabels();
         foreach ($userFields as $fieldAttributes) {
             $field = new Field();
-            $fieldAttributes += [
+            $fieldAttributes = array_merge($fieldAttributes, [
                 'module_id' => $this->id,
                 'title'     => isset($userLabels[$fieldAttributes['name']]) ? $userLabels[$fieldAttributes['name']] : ucfirst($fieldAttributes['name']),
                 'input'     => Field::INPUT_INPUT,
                 'is_default'=> Field::DEFAULT_FIELD
-            ];
+            ]);
             $field->setAttributes($fieldAttributes, false);
             $field->save();
         }

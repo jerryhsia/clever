@@ -69,7 +69,9 @@ class User extends ActiveRecord implements IdentityInterface
             'name' => Yii::t('user', 'Name'),
             'email' => Yii::t('user', 'Email'),
             'username' => Yii::t('user', 'Username'),
-            'password' => Yii::t('user', 'Password')
+            'password' => Yii::t('user', 'Password'),
+            'roles' => Yii::t('user', 'Roles'),
+            'role_ids' => Yii::t('user', 'Roles')
         ];
     }
 

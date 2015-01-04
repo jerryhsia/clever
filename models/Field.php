@@ -63,7 +63,7 @@ class Field extends \yii\db\ActiveRecord
             ['name', 'validateName'],
             ['name', 'unique', 'when' => function() {
                 return $this->name && !$this->hasErrors();
-            }]
+            }, 'filter' => 'module_id = '.$this->module_id]
         ];
     }
 
@@ -165,13 +165,13 @@ class Field extends \yii\db\ActiveRecord
         }
         $fields = ['id'];
         if ($this->module->is_user) {
-            $fields = array_merge($fields, ['user_id', 'name', 'username', 'password', 'email']);
+            $fields = array_merge($fields, ['user_id', 'name', 'username', 'password', 'email', 'role_ids']);
         }
         return !in_array($this->name, $fields);
     }
 
     public function getIsUserField()
     {
-        return in_array($this->name, ['name', 'username', 'password', 'email']);
+        return in_array($this->name, ['name', 'username', 'password', 'email', 'role_ids']);
     }
 }
