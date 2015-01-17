@@ -130,6 +130,13 @@ class Field extends \yii\db\ActiveRecord
                 $this->setAttribute($field, $this->getOldAttribute($field));
             }
         }
+
+        if (is_array($this->option)) {
+            $this->option = implode(',', $this->option);
+        } else {
+            $this->option = str_replace('，', ',', $this->option);
+        }
+
         return parent::beforeSave($insert);
     }
 
@@ -152,6 +159,13 @@ class Field extends \yii\db\ActiveRecord
             }
         }
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function afterFind()
+    {
+        if ($this->option) {
+            $this->option = explode(',', $this->option);
+        }
     }
 
     public function afterDelete()
