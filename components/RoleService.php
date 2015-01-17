@@ -14,29 +14,32 @@ use yii\web\ForbiddenHttpException;
  */
 class RoleService
 {
-    private static $_roles = false;
 
-    public function getAll()
+    const CACHE_ROLES = 'cache_roles';
+
+    public function getRoles($isIndexed = true)
     {
-        if (self::$_roles === false) {
-            self::$_roles = Role::find()->all();
+        $roles = null;
+
+        if (Yii::$app->cache->exists(self::CACHE_ROLES)) {
+            $roles = Yii::$app->cache->get(self::CACHE_ROLES);
+        } else {
+            $roles = Role::find()->indexBy('id')->all();
+            Yii::$app->cache->set(self::CACHE_ROLES, $roles);
         }
-        return self::$_roles;
+
+        return $isIndexed ? $roles : App::removeIndex($roles);
     }
 
-    public function findById($id)
+    public function getRole($id)
     {
-        foreach ($this->getAll() as $role) {
-            if ($role->id == $id) {
-                return $role;
-            }
-        }
-        return null;
+        $roles = $this->getRoles();
+        return isset($roles[$id]) ? $roles[$id] : null;
     }
 
     private function clearCache()
     {
-        self::$_roles = false;
+        Yii::$app->cache->delete(self::CACHE_ROLES);
     }
 
     /**

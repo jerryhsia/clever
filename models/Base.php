@@ -10,17 +10,36 @@ use yii\web\ForbiddenHttpException;
 
 abstract class Base extends ActiveRecord
 {
-    public $module = null;
-
     public function fields()
     {
         $fields = parent::fields();
+
+        $fields['to_string'] = 'toString';
+
+        return $fields;
+    }
+
+    public function extraFields()
+    {
+        $fields = parent::extraFields();
 
         if ($this->isUser()) {
             $fields['roles'] = 'roles';
         }
 
         return $fields;
+    }
+
+    public function getModule()
+    {
+        $name = end(explode("\\Data", $this->className()));
+        $name = strtolower(preg_replace('/((?<=[A-Z])(?=[A-Z]))/', '_', $name));
+        return Yii::$container->get('ModuleService')->getModule($name);
+    }
+
+    public function getFields()
+    {
+        return Yii::$container->get('ModuleService')->getFields($this->getModule());
     }
 
     public function getUser()
@@ -37,13 +56,12 @@ abstract class Base extends ActiveRecord
 
     public function getRoles()
     {
-        if (self::$_roleMap === false) {
-            self::$_roleMap = ArrayHelper::index(Yii::$container->get('RoleService')->getAll(), 'id');
-        }
+        $roles = Yii::$container->get('RoleService')->getRoles();
+
         $result = [];
         foreach ($this->role_ids as $roleId) {
-            if (isset(self::$_roleMap[$roleId])) {
-                $result[] = self::$_roleMap[$roleId];
+            if (isset($roles[$roleId])) {
+                $result[] = $roles[$roleId];
             }
         }
         return $result;
@@ -67,7 +85,7 @@ abstract class Base extends ActiveRecord
             if ($insert) {
                 $user = new User();
             } else {
-                $user = $userService->findById($this->user_id);
+                $user = $userService->getUser($this->user_id);
             }
 
             if ($userService->save($user, $userAttributes)) {
@@ -85,6 +103,15 @@ abstract class Base extends ActiveRecord
                 return false;
             }
         }
+
+
+        $fields = $this->getFields();
+        foreach ($fields as $field) {
+            if (in_array($field->input, [Field::INPUT_MULTIPLE_SELECT, Field::INPUT_MULTIPLE_FILE])) {
+                $this->setAttribute($field->name, implode(',', $this->getAttribute($field->name)));
+            }
+        }
+
         return parent::beforeSave($insert);
     }
 
@@ -111,6 +138,13 @@ abstract class Base extends ActiveRecord
             }
             $this->role_ids = $roleIds;
         }
+
+        $fields = $this->getFields();
+        foreach ($fields as $field) {
+            if (in_array($field->input, [Field::INPUT_MULTIPLE_SELECT, Field::INPUT_MULTIPLE_FILE])) {
+                $this->setAttribute($field->name, explode(',', $this->getAttribute($field->name)));
+            }
+        }
     }
 
     public function beforeDelete()
@@ -127,5 +161,34 @@ abstract class Base extends ActiveRecord
             User::deleteAll(['id' => $this->user_id]);
             UserRole::deleteAll(['user_id' => $this->user_id]);
         }
+    }
+
+    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    {
+        $arr = parent::toArray($fields, $expand, $recursive);
+
+        if ($this->isUser()) {
+            $arr['role_ids_model'] = $this->roles;
+        }
+
+        $dataService = Yii::$container->get('DataService');
+        $fields = $this->getFields();
+        foreach ($fields as $field) {
+            if ($field->relation_id) {
+                $query = $dataService->search($field->relationModule, ['id' => $this->getAttribute($field->name)]);
+                if ($field->relation_type == Field::RELATION_HAS_ONE) {
+                    $arr[$field['name'].'_model'] = $query->one();
+                } else if ($field->relation_type == Field::RELATION_HAS_MANY) {
+                    $arr[$field['name'].'_model'] = $query->all();
+                }
+            }
+        }
+
+        return $arr;
+    }
+
+    public function getToString()
+    {
+        return $this->name;
     }
 }

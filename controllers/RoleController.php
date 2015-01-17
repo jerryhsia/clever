@@ -16,7 +16,7 @@ use yii\web\NotFoundHttpException;
 class RoleController extends RestController
 {
     /**
-     * @var
+     * @var \app\components\RoleService $roleService
      */
     public $roleService;
 
@@ -49,7 +49,7 @@ class RoleController extends RestController
      */
     public function actionIndex()
     {
-        return $this->roleService->getAll();
+        return $this->roleService->getRoles(false);
     }
 
     /**

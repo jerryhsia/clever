@@ -17,9 +17,14 @@ use yii\web\NotFoundHttpException;
  */
 class DataController extends RestController
 {
-
+    /**
+     * @var \app\components\ModuleService $moduleService
+     */
     public $moduleService;
 
+    /**
+     * @var \app\components\DataService $dataService
+     */
     public $dataService;
 
     public function __construct($id, $module, $config = [])
@@ -38,7 +43,7 @@ class DataController extends RestController
      */
     private function loadModule($moduleName)
     {
-        $module = $this->moduleService->searchModule(['name' => $moduleName])->one();
+        $module = $this->moduleService->getModule($moduleName);
         if (!$module) {
             throw new NotFoundHttpException(Yii::t('module', 'Module not found'));
         }

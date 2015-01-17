@@ -26,7 +26,7 @@ class UserService
         return $user->save();
     }
 
-    public function findById($id)
+    public function getUser($id)
     {
         return $this->search(['id' => $id])->one();
     }

@@ -7,6 +7,7 @@ use Yii;
 use app\models\Field;
 use app\models\Module;
 use yii\db\Migration;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class ModuleService
@@ -16,31 +17,55 @@ use yii\db\Migration;
  */
 class ModuleService
 {
+    const CACHE_MODULES = 'cache_modules';
+    const CACHE_FIELDS  = 'cache_fields';
+
     public function saveModule (Module $module, array $attributes)
     {
         $module->setAttributes($attributes, false);
         $result = $module->save();
+
+        if ($result) {
+            $this->clearModuleCache();
+        }
+
         return $result;
     }
 
-    /**
-     * Search module
-     *
-     * @return mixed
-     */
-    public function searchModule(array $filter)
+    public function getModule($idOrName)
     {
-        $query = Module::find();
+        $modules = $this->getModules();
 
-        if (isset($filter['id'])) {
-            $query->andFilterWhere(['id' => $filter['id']]);
+        if (is_numeric($idOrName)) {
+            return isset($modules[$idOrName]) ? $modules[$idOrName] : null;
+        } else {
+            foreach ($modules as $id => $module) {
+                if ($module->getAttribute('name') == $idOrName) {
+                    return $module;
+                }
+            }
         }
 
-        if (isset($filter['name'])) {
-            $query->andFilterWhere(['name' => $filter['name']]);
+        return null;
+    }
+
+    public function getModules($isIndexed = true)
+    {
+        $modules = null;
+
+        if (Yii::$app->cache->exists(self::CACHE_MODULES)) {
+            $modules = Yii::$app->cache->get(self::CACHE_MODULES);
+        } else {
+            $modules = Module::find()->indexBy('id')->all();
+            Yii::$app->cache->set(self::CACHE_MODULES, $modules);
         }
 
-        return $query;
+        return $isIndexed ? $modules : App::removeIndex($modules);
+    }
+
+    private function clearModuleCache()
+    {
+        Yii::$app->cache->delete(self::CACHE_MODULES);
     }
 
     /**
@@ -50,7 +75,23 @@ class ModuleService
      */
     public function deleteModule(Module $module)
     {
-        return $module->delete() === false ? false : true;
+        $result = $module->delete() === false ? false : true;
+        if ($result) {
+            $this->clearModuleCache();
+        }
+        return $result;
+    }
+
+    private function clearFieldCache()
+    {
+        Yii::$app->cache->delete(self::CACHE_FIELDS);
+    }
+
+    public function getField(Module $module, $id)
+    {
+        $fields = $this->getFields($module);
+
+        return isset($fields[$id]) ? $fields[$id] : null;
     }
 
     /**
@@ -58,31 +99,51 @@ class ModuleService
      *
      * @return mixed
      */
-    public function searchField(Module $module, array $filter)
+    public function getFields(Module $module, $isIndexed = true)
     {
-        $query = Field::find();
+        $fields = null;
 
-        $query->andFilterWhere(['module_id' => $module->id]);
+        if (Yii::$app->cache->exists(self::CACHE_FIELDS)) {
+            $fields = Yii::$app->cache->get(self::CACHE_FIELDS);
+        } else {
+            $query = Field::find();
+            $query->orderBy(['sort' => SORT_ASC, 'id' => SORT_ASC]);
+            $result = $query->all();
 
-        if (isset($filter['id'])) {
-            $query->andFilterWhere(['id' => $filter['id']]);
+            $fields = [];
+            foreach ($result as $field) {
+                $fields[$field->module_id][$field->id] = $field;
+            }
 
+            Yii::$app->cache->set(self::CACHE_FIELDS, $fields);
         }
 
-        $query->orderBy(['sort' => SORT_ASC, 'id' => SORT_ASC]);
-
-        return $query;
+        $result = isset($fields[$module->id]) ? $fields[$module->id] : [];
+        return $isIndexed ? $result : App::removeIndex($result);
     }
 
     public function saveField (Module $module, Field $field, array $attributes)
     {
         $attributes['module_id'] = $module->id;
         $field->setAttributes($attributes, false);
-        return $field->save();
+
+        $result = $field->save();
+
+        if ($result) {
+            $this->clearFieldCache();
+        }
+
+        return $result;
     }
 
     public function deleteField (Module $module, Field $field)
     {
-        return $field->delete() === false ? false : true;
+        $result = $field->delete() === false ? false : true;
+
+        if ($result) {
+            $this->clearFieldCache();
+        }
+
+        return $result;
     }
 }

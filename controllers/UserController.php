@@ -14,6 +14,9 @@ use app\models\User;
  */
 class UserController extends RestController
 {
+    /**
+     * @var \app\components\UserService $userService
+     */
     public $userService;
 
     public function __construct($id, $module, $config = [])

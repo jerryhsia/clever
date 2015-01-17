@@ -47,6 +47,7 @@ class Role extends ActiveRecord
     {
         $fields = parent::fields();
         $fields['is_super'] = 'isSuper';
+        $fields['to_string'] = 'toString';
 
         return $fields;
     }
@@ -54,5 +55,10 @@ class Role extends ActiveRecord
     public function getIsSuper()
     {
         return in_array($this->id, [1]);
+    }
+
+    public function getToString()
+    {
+        return $this->name;
     }
 }

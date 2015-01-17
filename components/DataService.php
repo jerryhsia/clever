@@ -13,7 +13,7 @@ class DataService
     public function save(Module $module, Base $model, array $attributes)
     {
         $transaction = Yii::$app->db->beginTransaction();
-        $model->module = $module;
+
         $model->setAttributes($attributes, false);
         $result = $model->save();
         if ($result) {
@@ -27,7 +27,18 @@ class DataService
     public function search(Module $module, array $filters = [])
     {
         $className = $module->getFullClassName();
+
+        /** @var \yii\db\ActiveQuery $query */
         $query = $className::find();
+
+        if (isset($filters['id'])) {
+            $query->andFilterWhere(['id' => $filters['id']]);
+        }
+
+        if (isset($filters['keyword']) && $filters['keyword']) {
+            $query->andWhere("name like '%".$filters['keyword']."%'");
+        }
+
         return $query;
     }
 

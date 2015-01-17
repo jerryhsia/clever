@@ -3,6 +3,7 @@
 
 namespace app\controllers;
 
+use app\components\App;
 use app\models\Field;
 use Yii;
 use app\models\Module;
@@ -18,7 +19,7 @@ class ModuleController extends RestController
 {
 
     /**
-     * @var
+     * @var \app\components\ModuleService $moduleService
      */
     public $moduleService;
 
@@ -37,7 +38,7 @@ class ModuleController extends RestController
      */
     private function loadModule($id)
     {
-        $module = $this->moduleService->searchModule(['id' => $id])->one();
+        $module = $this->moduleService->getModule($id);
         if (!$module) {
             throw new NotFoundHttpException(Yii::t('module', 'Module not found'));
         }
@@ -51,8 +52,7 @@ class ModuleController extends RestController
      */
     public function actionIndex()
     {
-        $params = Yii::$app->request->getQueryParams();
-        return $this->moduleService->searchModule($params)->all();
+        return $this->moduleService->getModules(false);
     }
 
     /**
@@ -110,7 +110,7 @@ class ModuleController extends RestController
      */
     private function loadField(Module $module, $id)
     {
-        $field = $this->moduleService->searchField($module, ['id' => $id])->one();
+        $field = $this->moduleService->getField($module, $id);
         if (!$field) {
             throw new NotFoundHttpException(Yii::t('module', 'Field not found'));
         }
@@ -126,10 +126,8 @@ class ModuleController extends RestController
     {
         $moduleId = Yii::$app->request->getQueryParam('id');
         $module = $this->loadModule($moduleId);
-        $params = Yii::$app->request->getQueryParams();
-        unset($params['id']);
 
-        $result = $this->moduleService->searchField($module, $params)->all();
+        $result = $this->moduleService->getFields($module, false);
         return $result;
     }
 

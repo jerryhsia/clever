@@ -53,6 +53,8 @@ class Module extends \yii\db\ActiveRecord
 
     public function validateName()
     {
+        $this->name = strtolower($this->name);
+
         if (!$this->hasErrors() &&
             !preg_match('/^[a-z]+$/i', $this->name) &&
             !preg_match('/^[a-z]+[_]{1}[a-z]+$/i', $this->name)

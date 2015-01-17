@@ -18,7 +18,10 @@ use Yii;
  * @property string $input
  * @property string $type
  * @property string $size
-
+ * @property string $relation_id
+ * @property string $relation_type
+ * @property string $option
+ * @property string $sort
  */
 class Field extends \yii\db\ActiveRecord
 {
@@ -29,6 +32,9 @@ class Field extends \yii\db\ActiveRecord
     const INPUT_MULTIPLE_SELECT = 'multiple_select';
     const INPUT_DATE = 'date';
     const INPUT_MULTIPLE_FILE = 'files';
+
+    const RELATION_HAS_ONE = 'has_one';
+    const RELATION_HAS_MANY = 'has_many';
 
     const DEFAULT_FIELD = 1;
 
@@ -83,7 +89,10 @@ class Field extends \yii\db\ActiveRecord
         return parent::fields() + [
             'can_edit' => 'canEdit',
             'can_delete' => 'canDelete',
-            'is_user_field' => 'isUserField'
+            'is_user_field' => 'isUserField',
+            'has_relation' => 'hasRelation',
+            'module' => 'module',
+            'relation_module' => 'relationModule'
         ];
     }
 
@@ -105,13 +114,18 @@ class Field extends \yii\db\ActiveRecord
 
     public function getModule()
     {
-        return $this->hasOne(Module::className(), ['id' => 'module_id']);
+        return Yii::$container->get('ModuleService')->getModule($this->module_id);
+    }
+
+    public function getRelationModule()
+    {
+        return Yii::$container->get('ModuleService')->getModule($this->relation_id);
     }
 
     public function beforeSave($insert)
     {
         if (!$insert) {
-            $fields = ['name', 'type', 'input'];
+            $fields = ['name', 'type', 'input', 'relation_id', 'relation_type'];
             foreach ($fields as $field) {
                 $this->setAttribute($field, $this->getOldAttribute($field));
             }
@@ -171,5 +185,13 @@ class Field extends \yii\db\ActiveRecord
     public function getIsUserField()
     {
         return in_array($this->name, ['name', 'username', 'password', 'email', 'role_ids']);
+    }
+
+    public function getHasRelation()
+    {
+        if ($this->module->is_user && in_array($this->name, ['role_ids'])) {
+            return true;
+        }
+        return $this->relation_id > 0;
     }
 }

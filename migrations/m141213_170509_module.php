@@ -32,6 +32,9 @@ class m141213_170509_module extends Migration
             'input'     => 'varchar(50) NOT NULL',
             'type'      => 'varchar(50) NOT NULL',
             'size'      => 'int(11)     NOT NULL DEFAULT 200',
+            'relation_id' => 'int(11)     NOT NULL DEFAULT 0',
+            'relation_type' => 'varchar(50)     NULL',
+            'option'    => 'text        NULL',
             'sort'      => 'tinyint(1)  NOT NULL DEFAULT 0',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);

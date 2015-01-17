@@ -31,4 +31,13 @@ class App
             }
         }
     }
+
+    public static function removeIndex($array)
+    {
+        $result = [];
+        foreach ($array as $row) {
+            $result[] = $row;
+        }
+        return $result;
+    }
 }
