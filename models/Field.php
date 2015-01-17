@@ -28,6 +28,8 @@ class Field extends \yii\db\ActiveRecord
 
     const INPUT_INPUT = 'input';
     const INPUT_TEXTAREA = 'textarea';
+    const INPUT_RADIO = 'radio';
+    const INPUT_CHECKBOX = 'checkbox';
     const INPUT_SELECT = 'select';
     const INPUT_MULTIPLE_SELECT = 'multiple_select';
     const INPUT_DATE = 'date';
@@ -57,9 +59,7 @@ class Field extends \yii\db\ActiveRecord
             ['size', 'filter', 'filter' => function() {
                 return $this->size ? $this->size : 200;
             }],
-            ['input', 'filter', 'filter' => function() {
-                return $this->input ? $this->input : self::INPUT_INPUT;
-            }],
+            ['input', 'validateInput'],
             ['type', 'filter', 'filter' => function() {
                 return $this->type ? $this->type : 'varchar';
             }],
@@ -77,10 +77,39 @@ class Field extends \yii\db\ActiveRecord
             !preg_match('/^[a-z]+$/i', $this->name) &&
             !preg_match('/^[a-z]+[_]{1}[a-z]+$/i', $this->name)
         ) {
-            $this->addError('name',
-                Yii::t('field', '{attribute} format error',
-                    ['attribute' => Yii::t('field', 'Name')])
-            );
+            $message = Yii::t('field', '{attribute} format error', ['attribute' => $this->attributeLabels()['name']]);
+            $this->addError('name', $message);
+        }
+    }
+
+    public function validateInput()
+    {
+        if ($this->hasErrors()) return;
+
+        if ($this->relation_id) {
+            if (!$this->relation_type) {
+                $message = Yii::t('field', '{attribute} required', ['attribute' => $this->attributeLabels()['relation_type']]);
+                $this->addError('relation_type', $message);
+            }
+            switch ($this->relation_type) {
+                case self::RELATION_HAS_ONE:
+                    $this->input = self::INPUT_SELECT;
+                    break;
+                case self::RELATION_HAS_MANY:
+                    $this->input = self::INPUT_MULTIPLE_SELECT;
+                    break;
+            }
+        } else {
+            $inputs = [
+                self::INPUT_SELECT,
+                self::INPUT_MULTIPLE_SELECT,
+                self::INPUT_RADIO,
+                self::INPUT_CHECKBOX
+            ];
+            if (in_array($this->input, $inputs) && empty($this->option)) {
+                $message = Yii::t('field', '{attribute} required', ['attribute' => $this->attributeLabels()['option']]);
+                $this->addError('option', $message);
+            }
         }
     }
 
@@ -108,7 +137,9 @@ class Field extends \yii\db\ActiveRecord
             'title'     => Yii::t('field', 'Title'),
             'inupt'     => Yii::t('field', 'Input'),
             'type'      => Yii::t('field', 'Type'),
-            'size'      => Yii::t('field', 'Size')
+            'size'      => Yii::t('field', 'Size'),
+            'relation_type' => Yii::t('field', 'Relation Type'),
+            'option'    => Yii::t('field', 'Option')
         ];
     }
 

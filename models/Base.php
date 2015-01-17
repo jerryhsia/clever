@@ -106,8 +106,13 @@ abstract class Base extends ActiveRecord
 
 
         $fields = $this->getFields();
+        $inputs = [
+            Field::INPUT_MULTIPLE_SELECT,
+            Field::INPUT_MULTIPLE_FILE,
+            Field::INPUT_CHECKBOX
+        ];
         foreach ($fields as $field) {
-            if (in_array($field->input, [Field::INPUT_MULTIPLE_SELECT, Field::INPUT_MULTIPLE_FILE])) {
+            if (in_array($field->input, $inputs)) {
                 $this->setAttribute($field->name, implode(',', $this->getAttribute($field->name)));
             }
         }
@@ -140,9 +145,15 @@ abstract class Base extends ActiveRecord
         }
 
         $fields = $this->getFields();
+        $inputs = [
+            Field::INPUT_MULTIPLE_SELECT,
+            Field::INPUT_MULTIPLE_FILE,
+            Field::INPUT_CHECKBOX
+        ];
         foreach ($fields as $field) {
-            if (in_array($field->input, [Field::INPUT_MULTIPLE_SELECT, Field::INPUT_MULTIPLE_FILE])) {
-                $this->setAttribute($field->name, explode(',', $this->getAttribute($field->name)));
+            if (in_array($field->input, $inputs)) {
+                $arr = $this->getAttribute($field->name) ? explode(',', $this->getAttribute($field->name)) : [];
+                $this->setAttribute($field->name, $arr);
             }
         }
     }
