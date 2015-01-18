@@ -197,7 +197,7 @@ class Module extends \yii\db\ActiveRecord
                 'module_id' => $this->id,
                 'title'     => isset($userLabels[$fieldAttributes['name']]) ? $userLabels[$fieldAttributes['name']] : ucfirst($fieldAttributes['name']),
                 'input'     => Field::INPUT_INPUT,
-                'is_default'=> Field::DEFAULT_FIELD
+                'is_default'=> 1
             ]);
             $field->setAttributes($fieldAttributes, false);
             $field->save();
@@ -206,6 +206,7 @@ class Module extends \yii\db\ActiveRecord
 
     public function beforeDelete()
     {
+        parent::beforeDelete();
         if ($this->id == self::DEFAULT_MODULE_ID) {
             throw new ForbiddenHttpException(Yii::t('module', 'Default module cannot be deleted'));
         }
