@@ -76,5 +76,15 @@ class AppController extends Controller
             'role_ids' => [1]
         ];
         $dataService->save($module, $model, $attributes);
+
+        $this->actionSet();
+    }
+
+    public function actionSet()
+    {
+        $settingService = Yii::$container->get('SettingService');
+        foreach (Yii::$app->params as $key => $value) {
+            $settingService->set($key, $value);
+        }
     }
 }

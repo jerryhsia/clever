@@ -8,3 +8,5 @@ Thumbs.db
 .DS_Store
 
 models/Data*.php
+web/uploads/*
+!web/uploads/.gitkeep

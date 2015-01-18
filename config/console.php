@@ -38,5 +38,6 @@ Yii::$container->setSingleton('RoleService', 'app\components\RoleService');
 Yii::$container->setSingleton('SettingService', 'app\components\SettingService');
 Yii::$container->setSingleton('ModuleService', 'app\components\ModuleService');
 Yii::$container->setSingleton('DataService', 'app\components\DataService');
+Yii::$container->setSingleton('FileService', 'app\components\FileService');
 
 return $config;

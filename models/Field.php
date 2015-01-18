@@ -34,7 +34,8 @@ class Field extends \yii\db\ActiveRecord
     const INPUT_SELECT = 'select';
     const INPUT_MULTIPLE_SELECT = 'multiple_select';
     const INPUT_DATE = 'date';
-    const INPUT_MULTIPLE_FILE = 'files';
+    const INPUT_FILE = 'file';
+    const INPUT_MULTIPLE_FILE = 'multiple_file';
 
     const RELATION_HAS_ONE = 'has_one';
     const RELATION_HAS_MANY = 'has_many';
@@ -58,7 +59,6 @@ class Field extends \yii\db\ActiveRecord
             [['name', 'title', 'input'], 'string', 'max' => 50],
             ['name', 'validateName'],
             ['name', 'validateInput'],
-            ['type', 'validateType'],
             ['name', 'unique', 'when' => function() {
                 return $this->name && !$this->hasErrors();
             }, 'filter' => 'module_id = '.$this->module_id]
@@ -106,21 +106,6 @@ class Field extends \yii\db\ActiveRecord
         }
     }
 
-    public function validateType()
-    {
-        if ($this->hasErrors()) return;
-
-        if (false && $this->relation_id) {
-            if ($this->relation_type == self::RELATION_HAS_ONE) {
-                $this->type = 'int';
-                $this->size = '11';
-            }
-        } else {
-            $this->type = 'varchar';
-            $this->size = 200;
-        }
-    }
-
     public function fields()
     {
         return parent::fields() + [
@@ -164,6 +149,18 @@ class Field extends \yii\db\ActiveRecord
             foreach ($fields as $field) {
                 $this->setAttribute($field, $this->getOldAttribute($field));
             }
+        }
+
+        $this->size = intval($this->size);
+        if (false && $this->relation_id) {
+            if ($this->relation_type == self::RELATION_HAS_ONE) {
+                $this->type = 'int';
+                $this->size = intval($this->size);
+                $this->size = $this->size ? $this->size : 11;
+            }
+        } else {
+            $this->type = 'varchar';
+            $this->size = $this->size ? $this->size : 11;
         }
 
         if (is_array($this->option)) {
