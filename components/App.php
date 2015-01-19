@@ -40,4 +40,9 @@ class App
         }
         return $result;
     }
+
+    public static function getRootUrl()
+    {
+        self::dump($_SERVER['PHP_SELF']);
+    }
 }

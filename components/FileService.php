@@ -3,8 +3,8 @@
 
 namespace app\components;
 use app\models\File;
+use app\models\FileUsage;
 use Yii;
-use yii\caching\Cache;
 use yii\web\ForbiddenHttpException;
 use yii\web\UploadedFile;
 
@@ -16,6 +16,23 @@ use yii\web\UploadedFile;
  */
 class FileService
 {
+
+    public function getFile($id)
+    {
+        return File::find()->andWhere(['id' => $id])->one();
+    }
+
+    public function getFiles($filters)
+    {
+        $query = File::find();
+
+        if (isset($filters['id'])) {
+            $query->andFilterWhere(['id' => $filters['id']]);
+        }
+
+        return $query->all();
+    }
+
     public function save(UploadedFile $uploadedFile)
     {
         $file = new File();
@@ -60,5 +77,34 @@ class FileService
 
         @unlink($uploadedFile->tempName);
         return $file;
+    }
+
+    public function attach($fileId, $type, $dataId, $fieldId = null)
+    {
+        $fileUsage = new FileUsage();
+        $fileUsage->file_id = $fileId;
+        $fileUsage->type = $type;
+        $fileUsage->data_id = $dataId;
+        $fileUsage->field_id = $fieldId;
+
+        $fileUsage->save();
+    }
+
+    public function detach($fileId, $type, $dataId, $fieldId = null)
+    {
+        $where['file_id'] = $fileId;
+        $where['type'] = $type;
+        $where['data_id'] = $dataId;
+
+        if ($fieldId) {
+            $where['field_id'] = $fieldId;
+        }
+
+        if (FileUsage::deleteAll($where)) {
+            if (FileUsage::find()->andWhere(['file_id' => $fileId])->count() == 0) {
+                $file = self::getFile($fileId);
+                if ($file) $file->delete();
+            }
+        }
     }
 }

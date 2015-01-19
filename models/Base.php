@@ -52,8 +52,6 @@ abstract class Base extends ActiveRecord
         return ($this->hasAttribute('user_id') && $this->hasAttribute('username'));
     }
 
-    private static $_roleMap = false;
-
     public function getRoles()
     {
         $roles = Yii::$container->get('RoleService')->getRoles();
@@ -70,10 +68,6 @@ abstract class Base extends ActiveRecord
     public function beforeSave($insert)
     {
         if ($this->isUser()) {
-            if (is_array($this->role_ids)) {
-                $this->role_ids = implode(',', $this->role_ids);
-            }
-            $this->role_ids = $this->role_ids ? $this->role_ids : '';
 
             $userService = Yii::$container->get('UserService');
             $userAttributes = $this->getAttributes();
@@ -93,7 +87,7 @@ abstract class Base extends ActiveRecord
                 $this->password = $user->password;
 
                 UserRole::deleteAll(['user_id' => $user->id]);
-                foreach (explode(',', $this->role_ids) as $roleId) {
+                foreach ($this->role_ids as $roleId) {
                     $userRole = new UserRole();
                     $userRole->setAttributes(['user_id' => $user->id, 'role_id' => $roleId], false);
                     $userRole->save();
@@ -104,15 +98,8 @@ abstract class Base extends ActiveRecord
             }
         }
 
-
-        $fields = $this->getFields();
-        $inputs = [
-            Field::INPUT_MULTIPLE_SELECT,
-            Field::INPUT_MULTIPLE_FILE,
-            Field::INPUT_CHECKBOX
-        ];
-        foreach ($fields as $field) {
-            if (in_array($field->input, $inputs)) {
+        foreach ($this->getFields() as $field) {
+            if ($field->getIsMultiple()) {
                 $this->setAttribute($field->name, implode(',', $this->getAttribute($field->name)));
             }
         }
@@ -123,35 +110,32 @@ abstract class Base extends ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         $this->refresh();
+
         if ($this->isUser()) {
             if ($insert) {
                 User::updateAll(['data_id' => $this->id], ['id' => $this->user_id]);
             }
         }
+
+        foreach ($this->getFields() as $field) {
+            if ($field->input == Field::INPUT_FILE) {
+                $fileService = Yii::$container->get('FileService');
+                if (!$insert && isset($changedAttributes[$field['name']])) {
+                    $fileService->detach($changedAttributes[$field['name']], $field->module_id, $this->id, $field->id);
+                }
+                if ($insert || (!$insert && isset($changedAttributes[$field['name']]))) {
+                    $fileService->attach($this->getAttribute($field->name), $field->module_id, $this->id, $field->id);
+                }
+            }
+        }
+
         parent::afterSave($insert, $changedAttributes);
     }
 
     public function afterFind()
     {
-        if ($this->isUser()) {
-            $roleIds = [];
-            if ($this->role_ids) {
-                $roleIds = explode(',', $this->role_ids);
-            }
-            foreach ($roleIds as $key => $value) {
-                $roleIds[$key] = intval($value);
-            }
-            $this->role_ids = $roleIds;
-        }
-
-        $fields = $this->getFields();
-        $inputs = [
-            Field::INPUT_MULTIPLE_SELECT,
-            Field::INPUT_MULTIPLE_FILE,
-            Field::INPUT_CHECKBOX
-        ];
-        foreach ($fields as $field) {
-            if (in_array($field->input, $inputs)) {
+        foreach ($this->getFields() as $field) {
+            if ($field->getIsMultiple()) {
                 $arr = $this->getAttribute($field->name) ? explode(',', $this->getAttribute($field->name)) : [];
                 $this->setAttribute($field->name, $arr);
             }
@@ -179,19 +163,27 @@ abstract class Base extends ActiveRecord
         $arr = parent::toArray($fields, $expand, $recursive);
 
         if ($this->isUser()) {
-            $arr['role_ids_model'] = $this->roles;
+            $arr['role_ids_models'] = $this->roles;
         }
 
         $dataService = Yii::$container->get('DataService');
-        $fields = $this->getFields();
-        foreach ($fields as $field) {
+        $fileService = Yii::$container->get('FileService');
+        foreach ($this->getFields() as $field) {
             if ($field->relation_id) {
                 $query = $dataService->search($field->relationModule, ['id' => $this->getAttribute($field->name)]);
                 if ($field->relation_type == Field::RELATION_HAS_ONE) {
-                    $arr[$field['name'].'_model'] = $query->one();
+                    $arr[$field->getModelField()] = $query->one();
                 } else if ($field->relation_type == Field::RELATION_HAS_MANY) {
-                    $arr[$field['name'].'_model'] = $query->all();
+                    $arr[$field->getModelField()] = $query->all();
                 }
+            }
+
+            if ($field->input == Field::INPUT_FILE) {
+                $arr[$field->getModelField()] = $fileService->getFile($this->getAttribute($field->name));
+            }
+
+            if ($field->input == Field::INPUT_MULTIPLE_FILE) {
+                $arr[$field->getModelField()] = $fileService->getFiles(['id' => $this->getAttribute($field->name)]);
             }
         }
 

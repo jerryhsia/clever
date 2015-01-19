@@ -113,7 +113,9 @@ class Field extends \yii\db\ActiveRecord
             'is_user_field' => 'isUserField',
             'has_relation' => 'hasRelation',
             'module' => 'module',
-            'relation_module' => 'relationModule'
+            'relation_module' => 'relationModule',
+            'model_field' => 'modelField',
+            'is_multiple' => 'isMultiple'
         ];
     }
 
@@ -135,6 +137,20 @@ class Field extends \yii\db\ActiveRecord
     public function getModule()
     {
         return Yii::$container->get('ModuleService')->getModule($this->module_id);
+    }
+
+    public function getModelField()
+    {
+        return $this->name.($this->getIsMultiple() ? '_models': '_model');
+    }
+
+    public function getIsMultiple()
+    {
+        return in_array($this->input, [
+            Field::INPUT_MULTIPLE_SELECT,
+            Field::INPUT_MULTIPLE_FILE,
+            Field::INPUT_CHECKBOX
+        ]);
     }
 
     public function getRelationModule()
@@ -238,6 +254,6 @@ class Field extends \yii\db\ActiveRecord
         if ($this->module->is_user && in_array($this->name, ['role_ids'])) {
             return true;
         }
-        return $this->relation_id > 0;
+        return ($this->relation_id > 0 || in_array($this->input, [self::INPUT_FILE, self::INPUT_MULTIPLE_FILE]));
     }
 }

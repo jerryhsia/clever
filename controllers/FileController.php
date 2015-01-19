@@ -1,8 +1,8 @@
 <?php
 
-
 namespace app\controllers;
 
+use app\components\App;
 use Yii;
 use yii\web\UploadedFile;
 
@@ -21,6 +21,11 @@ class FileController extends RestController
     {
         $this->fileService = Yii::$container->get('FileService');
         parent::__construct($id, $module, $config);
+    }
+
+    public function actionIndex()
+    {
+        echo App::getRootUrl();
     }
 
     public function actionCreate()

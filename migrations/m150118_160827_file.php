@@ -25,8 +25,9 @@ class m150118_160827_file extends Migration
 
         $this->createTable('{{%file_usage}}', [
             'file_id'   => 'int(11) UNSIGNED NOT NULL',
-            'module_id' => 'int(11) UNSIGNED NOT NULL',
-            'data_id'   => 'int(11) UNSIGNED NOT NULL'
+            'type'      => 'tinyint(1) NOT NULL',
+            'data_id'   => 'int(11) UNSIGNED NOT NULL DEFAULT 0',
+            'field_id'  => 'int(11) UNSIGNED NOT NULL DEFAULT 0',
         ], $tableOptions);
     }
 

@@ -41,7 +41,8 @@ class File extends \yii\db\ActiveRecord
     {
         return array_merge(parent::fields(), [
             'suffix' => 'suffix',
-            'url' => 'url'
+            'url' => 'url',
+            'is_image' => 'isImage'
         ]);
     }
 
@@ -92,6 +93,11 @@ class File extends \yii\db\ActiveRecord
         return $this->getPath();
     }
 
+    public function getIsImage()
+    {
+        return strpos($this->type, 'image') !== false;
+    }
+
     public function getPath()
     {
         return sprintf('%s/%s/%s', date('Y'), date('m'), $this->md5.'.'.$this->getSuffix());
@@ -100,6 +106,11 @@ class File extends \yii\db\ActiveRecord
     public function getSavePath()
     {
         return sprintf('%s/web/uploads/%s', Yii::$app->getBasePath(), $this->getPath());
+    }
+
+    public function afterDelete()
+    {
+        @unlink($this->getSavePath());
     }
 
     /**
