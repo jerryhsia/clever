@@ -25,7 +25,7 @@ class FileController extends RestController
 
     public function actionIndex()
     {
-        echo App::getRootUrl();
+        echo Yii::getAlias('@webroot');
     }
 
     public function actionCreate()

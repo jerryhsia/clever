@@ -43,6 +43,14 @@ class App
 
     public static function getRootUrl()
     {
-        self::dump($_SERVER['PHP_SELF']);
+        if (php_sapi_name() == 'cli') {
+            return '/';
+        } else {
+            $base = str_replace('/index.php', '', $_SERVER['PHP_SELF']);
+            $protocol = 'http';
+            $host = $_SERVER['SERVER_NAME'];
+            $port = $_SERVER['SERVER_PORT'] == '80' ? '': ':'.$_SERVER['SERVER_PORT'];
+            return sprintf('%s://%s%s%s', $protocol, $host, $port, $base);
+        }
     }
 }

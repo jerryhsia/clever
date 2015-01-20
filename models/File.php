@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\App;
 use Yii;
 
 /**
@@ -90,7 +91,7 @@ class File extends \yii\db\ActiveRecord
 
     public function getUrl()
     {
-        return $this->getPath();
+        return App::getRootUrl().'/uploads/'.$this->getPath();
     }
 
     public function getIsImage()
@@ -105,7 +106,7 @@ class File extends \yii\db\ActiveRecord
 
     public function getSavePath()
     {
-        return sprintf('%s/web/uploads/%s', Yii::$app->getBasePath(), $this->getPath());
+        return sprintf('%s/uploads/%s', Yii::getAlias('@webroot'), $this->getPath());
     }
 
     public function afterDelete()
