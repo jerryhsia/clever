@@ -36,6 +36,7 @@ class Field extends \yii\db\ActiveRecord
     const INPUT_DATE = 'date';
     const INPUT_FILE = 'file';
     const INPUT_MULTIPLE_FILE = 'multiple_file';
+    const INPUT_EDITOR = 'editor';
 
     const RELATION_HAS_ONE = 'has_one';
     const RELATION_HAS_MANY = 'has_many';
@@ -168,16 +169,10 @@ class Field extends \yii\db\ActiveRecord
             }
         }
 
-        $this->size = intval($this->size);
-        if (false && $this->relation_id) {
-            if ($this->relation_type == self::RELATION_HAS_ONE) {
-                $this->type = 'int';
-                $this->size = intval($this->size);
-                $this->size = $this->size ? $this->size : 11;
-            }
-        } else {
-            $this->type = 'varchar';
-            $this->size = $this->size ? $this->size : 11;
+        $this->size = intval($this->size) ? intval($this->size) : 200;
+        $this->type = empty($this->type) ? 'varchar': empty($this->type);
+        if (in_array($this->input, [self::INPUT_TEXTAREA, self::INPUT_EDITOR])) {
+            $this->type = 'text';
         }
 
         if (is_array($this->option)) {
@@ -186,12 +181,21 @@ class Field extends \yii\db\ActiveRecord
             $this->option = str_replace('，', ',', $this->option);
         }
 
+        if ($insert) {
+            $max = self::find()->andWhere(['module_id' => $this->module_id])->max('sort');
+            $this->sort = intval($max) + 1;
+        }
+
         return parent::beforeSave($insert);
     }
 
     public function getColumnString ()
     {
-        return sprintf('%s(%d) %s', $this->type, $this->size, $this->is_null ? 'NULL' : "NOT NULL DEFAULT ''");
+        if ($this->type == 'text') {
+            return sprintf('%s %s', $this->type, $this->is_null ? 'NULL' : "NOT NULL");
+        } else {
+            return sprintf('%s(%d) %s', $this->type, $this->size, $this->is_null ? 'NULL' : "NOT NULL");
+        }
     }
 
     public function afterSave($insert, $changedAttributes)

@@ -127,7 +127,17 @@ class ModuleService
         $attributes['module_id'] = $module->id;
         $field->setAttributes($attributes, false);
 
-        $result = $field->save();
+        $result = null;
+        if ($field->isNewRecord) {
+            try {
+                $result = $field->save();
+            } catch (\Exception $e) {
+                $field->delete();
+                throw $e;
+            }
+        } else {
+            $result = $field->save();
+        }
 
         if ($result) {
             $this->clearFieldCache();
