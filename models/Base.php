@@ -117,14 +117,34 @@ abstract class Base extends ActiveRecord
             }
         }
 
+        $fileService = Yii::$container->get('FileService');
         foreach ($this->getFields() as $field) {
             if ($field->input == Field::INPUT_FILE) {
-                $fileService = Yii::$container->get('FileService');
                 if (!$insert && isset($changedAttributes[$field['name']])) {
                     $fileService->detach($changedAttributes[$field['name']], $field->module_id, $this->id, $field->id);
                 }
                 if ($insert || (!$insert && isset($changedAttributes[$field['name']]))) {
                     $fileService->attach($this->getAttribute($field->name), $field->module_id, $this->id, $field->id);
+                }
+            }
+
+            if ($field->input == Field::INPUT_MULTIPLE_FILE) {
+                $old = [];
+                $new = [];
+                if (!$insert && isset($changedAttributes[$field['name']])) {
+                    $old = $changedAttributes[$field['name']] ? explode(',', $changedAttributes[$field['name']]) : [];
+                }
+                if ($insert || (!$insert && isset($changedAttributes[$field['name']]))) {
+                    $new = $this->getAttribute($field->name);
+                }
+
+                $remove = array_diff($old, $new);
+                $add = array_diff($new, $old);
+                foreach ($add as $fileId) {
+                    $fileService->attach($fileId, $field->module_id, $this->id, $field->id);
+                }
+                foreach ($remove as $fileId) {
+                    $fileService->detach($fileId, $field->module_id, $this->id, $field->id);
                 }
             }
         }
@@ -183,7 +203,7 @@ abstract class Base extends ActiveRecord
             }
 
             if ($field->input == Field::INPUT_MULTIPLE_FILE) {
-                $arr[$field->getModelField()] = $fileService->getFiles(['id' => $this->getAttribute($field->name)]);
+                $arr[$field->getModelField()] = $this->getAttribute($field->name) ? $fileService->getFiles(['id' => $this->getAttribute($field->name)]) : [];
             }
         }
 

@@ -136,6 +136,27 @@ class ModuleService
         return $result;
     }
 
+    public function batchSaveField (Module $module, array $attributes)
+    {
+        $allowFields = ['sort'];
+
+        $result = 0;
+        foreach ($attributes as $attribute) {
+            if (!isset($attribute['id']) || !$attribute['id']) {
+                continue;
+            }
+            $id = $attribute['id'];
+            unset($attribute['id']);
+            $result += Field::updateAll($attribute, ['id' => $id]);
+        }
+
+        if ($result > 0) {
+            $this->clearFieldCache();
+        }
+
+        return $result;
+    }
+
     public function deleteField (Module $module, Field $field)
     {
         $result = $field->delete() === false ? false : true;

@@ -72,6 +72,7 @@ $config = [
                         'GET <id>/fields' => 'field-index',
                         'POST <id>/fields' => 'field-create',
                         'PUT <id>/fields/<field_id>' => 'field-update',
+                        'PUT <id>/fields' => 'field-batch-update',
                         'DELETE <id>/fields/<field_id>' => 'field-delete',
 
                         'OPTIONS <any:.*>' => 'options'

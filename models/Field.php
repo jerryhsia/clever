@@ -115,7 +115,8 @@ class Field extends \yii\db\ActiveRecord
             'module' => 'module',
             'relation_module' => 'relationModule',
             'model_field' => 'modelField',
-            'is_multiple' => 'isMultiple'
+            'is_multiple' => 'isMultiple',
+            'is_from_source' => 'isFromSource'
         ];
     }
 
@@ -251,9 +252,15 @@ class Field extends \yii\db\ActiveRecord
 
     public function getHasRelation()
     {
+        return ($this->getIsFromSource() || in_array($this->input, [self::INPUT_FILE, self::INPUT_MULTIPLE_FILE]));
+    }
+
+    public function getIsFromSource()
+    {
         if ($this->module->is_user && in_array($this->name, ['role_ids'])) {
             return true;
         }
-        return ($this->relation_id > 0 || in_array($this->input, [self::INPUT_FILE, self::INPUT_MULTIPLE_FILE]));
+
+        return $this->relation_id > 0;
     }
 }

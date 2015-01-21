@@ -165,6 +165,20 @@ class ModuleController extends RestController
     }
 
     /**
+     * PUT /modules/<id>/fields
+     *
+     * @return Integer
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionFieldBatchUpdate()
+    {
+        $moduleId = Yii::$app->request->getQueryParam('id');
+        $module = $this->loadModule($moduleId);
+        $attributes = Yii::$app->request->getBodyParams();
+        return $this->moduleService->batchSaveField($module, $attributes);
+    }
+
+    /**
      * DELETE /modules/<id>/fields/<field_id>
      *
      * @return Field
