@@ -170,7 +170,7 @@ class Field extends \yii\db\ActiveRecord
         }
 
         $this->size = intval($this->size) ? intval($this->size) : 200;
-        $this->type = empty($this->type) ? 'varchar': empty($this->type);
+        $this->type = empty($this->type) ? 'varchar': $this->type;
         if (in_array($this->input, [self::INPUT_TEXTAREA, self::INPUT_EDITOR])) {
             $this->type = 'text';
         }
