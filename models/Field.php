@@ -100,7 +100,7 @@ class Field extends \yii\db\ActiveRecord
                 self::INPUT_RADIO,
                 self::INPUT_CHECKBOX
             ];
-            if (in_array($this->input, $inputs) && empty($this->option)) {
+            if (in_array($this->input, $inputs) && empty($this->option) && $this->name != 'role_ids') {
                 $message = Yii::t('field', '{attribute} required', ['attribute' => $this->attributeLabels()['option']]);
                 $this->addError('option', $message);
             }

@@ -99,8 +99,14 @@ abstract class Base extends ActiveRecord
         }
 
         foreach ($this->getFields() as $field) {
+            $value = $this->getAttribute($field->name);
             if ($field->getIsMultiple()) {
-                $this->setAttribute($field->name, implode(',', $this->getAttribute($field->name)));
+                if (is_array($value)) {
+                    $value = implode(',', $value);
+                    $this->setAttribute($field->name, $value);
+                }
+            } else {
+                $value = $value.'';
             }
         }
 

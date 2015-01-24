@@ -82,6 +82,9 @@ class DataController extends RestController
             'query' => $query,
             'pagination' => [
                 'pageSize' => Yii::$app->request->getQueryParam('per_page')
+            ],
+            'sort' => [
+                'enableMultiSort' => true
             ]
         ]);
     }
