@@ -39,6 +39,13 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        $rs = Yii::$app->mailer->compose('test/test')
+            ->setFrom('nldy9916@163.com')
+            ->setTo('82269916@qq.com')
+            ->setSubject('test')
+            ->setHtmlBody('test')
+            ->send();
+        var_dump($rs);
         exit('index');
     }
 
