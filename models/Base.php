@@ -28,11 +28,16 @@ abstract class Base extends ActiveRecord
         return $fields;
     }
 
+    private static $_module = false;
+
     public function getModule()
     {
-        $name = end(explode("\\Data", $this->className()));
-        $name = strtolower(preg_replace('/((?<=[A-Z])(?=[A-Z]))/', '_', $name));
-        return Yii::$app->moduleService->getModule($name);
+        if (self::$_module === false) {
+            $name = end(explode("\\Data", $this->className()));
+            $name = strtolower(preg_replace('/((?<=[A-Z])(?=[A-Z]))/', '_', $name));
+            self::$_module = Yii::$app->moduleService->getModule($name);
+        }
+        return self::$_module;
     }
 
     public function getFields()
@@ -40,14 +45,9 @@ abstract class Base extends ActiveRecord
         return Yii::$app->moduleService->getFields($this->getModule());
     }
 
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
     public function isUser()
     {
-        return ($this->hasAttribute('user_id') && $this->hasAttribute('username'));
+        return boolval($this->getModule()->is_user);
     }
 
     public function getRoles()

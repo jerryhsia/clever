@@ -18,6 +18,12 @@ class RoleService extends Component
 
     const CACHE_ROLES = 'cache_roles';
 
+    /**
+     * Get multiple roles
+     *
+     * @param bool $isIndexed
+     * @return array|mixed|\yii\db\ActiveRecord[]
+     */
     public function getRoles($isIndexed = true)
     {
         $roles = null;
@@ -32,19 +38,28 @@ class RoleService extends Component
         return $isIndexed ? $roles : App::removeIndex($roles);
     }
 
+    /**
+     * Get a role
+     *
+     * @param $id
+     * @return null|\yii\db\ActiveRecord
+     */
     public function getRole($id)
     {
         $roles = $this->getRoles();
         return isset($roles[$id]) ? $roles[$id] : null;
     }
 
+    /**
+     * Clear cached role data
+     */
     private function clearCache()
     {
         Yii::$app->cache->delete(self::CACHE_ROLES);
     }
 
     /**
-     * Save role
+     * Save a role
      *
      * @param Role $role
      * @param array $attributes
@@ -60,11 +75,13 @@ class RoleService extends Component
         return $result;
     }
 
-
     /**
-     * Delete role
+     * Delete a role
      *
      * @param Role $role
+     * @return bool
+     * @throws ForbiddenHttpException
+     * @throws \Exception
      */
     public function delete(Role $role)
     {

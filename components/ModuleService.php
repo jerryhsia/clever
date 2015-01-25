@@ -7,8 +7,6 @@ use Yii;
 use app\models\Field;
 use app\models\Module;
 use yii\base\Component;
-use yii\db\Migration;
-use yii\helpers\ArrayHelper;
 
 /**
  * Class ModuleService
@@ -21,6 +19,13 @@ class ModuleService extends Component
     const CACHE_MODULES = 'cache_modules';
     const CACHE_FIELDS  = 'cache_fields';
 
+    /**
+     * Save a module
+     *
+     * @param Module $module
+     * @param array $attributes
+     * @return bool
+     */
     public function saveModule (Module $module, array $attributes)
     {
         $module->setAttributes($attributes, false);
@@ -33,6 +38,12 @@ class ModuleService extends Component
         return $result;
     }
 
+    /**
+     * Get a module by id or name
+     *
+     * @param $idOrName
+     * @return null|\yii\db\ActiveRecord
+     */
     public function getModule($idOrName)
     {
         $modules = $this->getModules();
@@ -50,6 +61,12 @@ class ModuleService extends Component
         return null;
     }
 
+    /**
+     * Get multiple modules
+     *
+     * @param bool $isIndexed whether indexed the result by id
+     * @return array|mixed|\yii\db\ActiveRecord[]
+     */
     public function getModules($isIndexed = true)
     {
         $modules = null;
@@ -64,15 +81,20 @@ class ModuleService extends Component
         return $isIndexed ? $modules : App::removeIndex($modules);
     }
 
+    /**
+     * Clear cached module data
+     */
     private function clearModuleCache()
     {
         Yii::$app->cache->delete(self::CACHE_MODULES);
     }
 
     /**
-     * Delete module
+     * Delete a module
      *
      * @param Module $module
+     * @return bool
+     * @throws \Exception
      */
     public function deleteModule(Module $module)
     {
@@ -83,11 +105,13 @@ class ModuleService extends Component
         return $result;
     }
 
-    private function clearFieldCache()
-    {
-        Yii::$app->cache->delete(self::CACHE_FIELDS);
-    }
-
+    /**
+     * Get a field
+     *
+     * @param Module $module
+     * @param $id
+     * @return null
+     */
     public function getField(Module $module, $id)
     {
         $fields = $this->getFields($module);
@@ -96,9 +120,11 @@ class ModuleService extends Component
     }
 
     /**
-     * Search field
+     * Get multiple fields
      *
-     * @return mixed
+     * @param Module $module
+     * @param bool $isIndexed
+     * @return array
      */
     public function getFields(Module $module, $isIndexed = true)
     {
@@ -123,6 +149,15 @@ class ModuleService extends Component
         return $isIndexed ? $result : App::removeIndex($result);
     }
 
+    /**
+     * Save a field
+     *
+     * @param Module $module
+     * @param Field $field
+     * @param array $attributes
+     * @return bool|null
+     * @throws \Exception
+     */
     public function saveField (Module $module, Field $field, array $attributes)
     {
         $attributes['module_id'] = $module->id;
@@ -147,7 +182,14 @@ class ModuleService extends Component
         return $result;
     }
 
-    public function batchSaveField (Module $module, array $array)
+    /**
+     * Batch save fields
+     *
+     * @param Module $module
+     * @param array $array
+     * @return int
+     */
+    public function saveFields (Module $module, array $array)
     {
         $allowFields = ['sort'];
 
@@ -177,6 +219,14 @@ class ModuleService extends Component
         return $result;
     }
 
+    /**
+     * Delete a field
+     *
+     * @param Module $module
+     * @param Field $field
+     * @return bool
+     * @throws \Exception
+     */
     public function deleteField (Module $module, Field $field)
     {
         $result = $field->delete() === false ? false : true;
@@ -186,5 +236,13 @@ class ModuleService extends Component
         }
 
         return $result;
+    }
+
+    /**
+     * Clear cached field data
+     */
+    private function clearFieldCache()
+    {
+        Yii::$app->cache->delete(self::CACHE_FIELDS);
     }
 }

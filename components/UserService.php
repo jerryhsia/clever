@@ -14,13 +14,6 @@ use yii\base\Component;
 class UserService extends Component
 {
 
-    /**
-     * Save user
-     *
-     * @param User $user
-     * @param array $attributes
-     * @return bool
-     */
     public function save(User $user, array $attributes)
     {
         $user->setAttributes($attributes, false);
@@ -32,12 +25,6 @@ class UserService extends Component
         return $this->search(['id' => $id])->one();
     }
 
-    /**
-     * Search user
-     *
-     * @param $filters
-     * @return \yii\db\ActiveQuery
-     */
     public function search($filters)
     {
         $query = User::find();
@@ -61,12 +48,6 @@ class UserService extends Component
         return $query;
     }
 
-    /**
-     * Load by identity
-     *
-     * @param $identity
-     * @return array|null|\yii\db\ActiveRecord
-     */
     public function loadByIdentity($identity)
     {
         return $this->search(['username' => $identity])->one();

@@ -170,7 +170,7 @@ class ModuleController extends RestController
         $module = $this->loadModule($moduleId);
         $attributes = Yii::$app->request->getBodyParams();
 
-        return Yii::$app->moduleService->batchSaveField($module, $attributes);
+        return Yii::$app->moduleService->saveFields($module, $attributes);
     }
 
     /**

@@ -17,12 +17,23 @@ use yii\web\UploadedFile;
  */
 class FileService extends Component
 {
-
+    /**
+     * Get a file
+     *
+     * @param $id
+     * @return array|null|\yii\db\ActiveRecord
+     */
     public function getFile($id)
     {
         return File::find()->andWhere(['id' => $id])->one();
     }
 
+    /**
+     * Get multiple files
+     *
+     * @param $filters
+     * @return array|\yii\db\ActiveRecord[]
+     */
     public function getFiles($filters)
     {
         $query = File::find();
@@ -34,6 +45,13 @@ class FileService extends Component
         return $query->all();
     }
 
+    /**
+     * Save an uploaded file
+     *
+     * @param UploadedFile $uploadedFile
+     * @return File
+     * @throws \Exception
+     */
     public function save(UploadedFile $uploadedFile)
     {
         $file = new File();
@@ -80,6 +98,14 @@ class FileService extends Component
         return $file;
     }
 
+    /**
+     * Attach a file to data
+     *
+     * @param $fileId
+     * @param $type
+     * @param $dataId
+     * @param null $fieldId
+     */
     public function attach($fileId, $type, $dataId, $fieldId = null)
     {
         $fileUsage = new FileUsage();
@@ -91,6 +117,15 @@ class FileService extends Component
         $fileUsage->save();
     }
 
+    /**
+     * Romove a file from data
+     *
+     * @param $fileId
+     * @param $type
+     * @param $dataId
+     * @param null $fieldId
+     * @throws \Exception
+     */
     public function detach($fileId, $type, $dataId, $fieldId = null)
     {
         $where['file_id'] = $fileId;

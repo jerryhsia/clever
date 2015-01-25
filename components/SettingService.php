@@ -9,19 +9,18 @@ use yii\helpers\ArrayHelper;
 
 class SettingService extends Component
 {
-
-    private $cacheKey = 'settings';
+    private static $_cacheKey = 'settings';
 
     /**
      * Get all settings
      *
-     * @return mixed|null
+     * @return array|mixed|null
      */
     public function getAll() {
         $cache = Yii::$app->cache;
         $settings = null;
-        if ($cache->exists($this->cacheKey)) {
-            $settings = $cache->get($this->cacheKey);
+        if ($cache->exists(self::$_cacheKey)) {
+            $settings = $cache->get(self::$_cacheKey);
         } else {
             $all = Setting::find()->all();
             $all = ArrayHelper::index($all, 'name');
@@ -31,7 +30,7 @@ class SettingService extends Component
                 $rs[$setting->name] = $setting->value;
             }
             $settings = $rs;
-            $cache->set($this->cacheKey, $rs);
+            $cache->set(self::$_cacheKey, $rs);
         }
         return $settings;
     }
@@ -50,11 +49,11 @@ class SettingService extends Component
     }
 
     /**
-     * Set setting
+     * Set a setting
      *
      * @param $name
      * @param null $value
-     * @return Setting
+     * @return Setting|array|null|\yii\db\ActiveRecord
      */
     public function set($name, $value = null)
     {
@@ -70,7 +69,7 @@ class SettingService extends Component
     }
 
     /**
-     * Delete setting by name
+     * Delete a setting
      *
      * @param $name
      */
@@ -82,10 +81,10 @@ class SettingService extends Component
     }
 
     /**
-     * Clear settings cache
+     * Clear setting data
      */
     private function clearCache()
     {
-        Yii::$app->cache->delete($this->cacheKey);
+        Yii::$app->cache->delete(self::$_cacheKey);
     }
 }

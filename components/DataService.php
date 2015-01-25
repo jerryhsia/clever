@@ -12,6 +12,15 @@ use yii\helpers\ArrayHelper;
 
 class DataService extends Component
 {
+    /**
+     * Save a data
+     *
+     * @param Module $module
+     * @param Base $model
+     * @param array $attributes
+     * @return bool
+     * @throws \yii\db\Exception
+     */
     public function save(Module $module, Base $model, array $attributes)
     {
         $transaction = Yii::$app->db->beginTransaction();
@@ -26,6 +35,13 @@ class DataService extends Component
         return $result;
     }
 
+    /**
+     * Search data
+     *
+     * @param Module $module
+     * @param array $filters
+     * @return \yii\db\ActiveQuery
+     */
     public function search(Module $module, array $filters = [])
     {
         $className = $module->getFullClassName();
@@ -68,6 +84,15 @@ class DataService extends Component
         return $query;
     }
 
+    /**
+     * Delete a data
+     *
+     * @param Module $module
+     * @param ActiveRecord $model
+     * @return bool
+     * @throws \Exception
+     * @throws \yii\db\Exception
+     */
     public function delete(Module $module, ActiveRecord $model)
     {
         $transaction = Yii::$app->db->beginTransaction();
