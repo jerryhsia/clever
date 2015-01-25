@@ -14,14 +14,8 @@ use app\models\User;
  */
 class UserController extends RestController
 {
-    /**
-     * @var \app\components\UserService $userService
-     */
-    public $userService;
-
     public function __construct($id, $module, $config = [])
     {
-        $this->userService = Yii::$container->get('UserService');
         parent::__construct($id, $module, $config);
     }
 
@@ -33,7 +27,7 @@ class UserController extends RestController
     public function actionIndex()
     {
         $params = Yii::$app->request->getQueryParams();
-        return $this->userService->search($params)->all();
+        return Yii::$app->userService->search($params)->all();
     }
 
     /**
@@ -46,7 +40,7 @@ class UserController extends RestController
     {
         $attributes = Yii::$app->request->getBodyParams();
         $user = new User();
-        $this->userService->save($user, $attributes);
+        Yii::$app->userService->save($user, $attributes);
         return $user;
     }
 

@@ -5,6 +5,7 @@ namespace app\components;
 use app\models\File;
 use app\models\FileUsage;
 use Yii;
+use yii\base\Component;
 use yii\web\ForbiddenHttpException;
 use yii\web\UploadedFile;
 
@@ -14,7 +15,7 @@ use yii\web\UploadedFile;
  * @package app\components
  * @author Jerry Hsia<xiajie9916@gmail.com>
  */
-class FileService
+class FileService extends Component
 {
 
     public function getFile($id)

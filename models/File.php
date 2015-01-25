@@ -51,7 +51,7 @@ class File extends \yii\db\ActiveRecord
     {
         if ($this->hasErrors()) return;
 
-        $settingService = Yii::$container->get('SettingService');
+        $settingService = Yii::$app->settingService;
         $allowSuffixs = $settingService->get('allow_file_suffix');
         if (!in_array($this->suffix, $allowSuffixs)) {
             $message = 'File suffix should be in {suffixs}';
@@ -63,7 +63,7 @@ class File extends \yii\db\ActiveRecord
     {
         if ($this->hasErrors()) return;
 
-        $settingService = Yii::$container->get('SettingService');
+        $settingService = Yii::$app->settingService;
         $allowSize = $settingService->get('allow_file_size');
         $maxSize = intval(ini_get('upload_max_filesize'));
         if ($allowSize) {

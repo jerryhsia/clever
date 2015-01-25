@@ -116,34 +116,38 @@ class Module extends \yii\db\ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $fields = [
-                'id' => 'int(11)     UNSIGNED NOT NULL AUTO_INCREMENT',
-                'PRIMARY KEY `id`(`id`)'
-            ];
-            $sql = Yii::$app->db->queryBuilder->createTable($this->getTableName(), $fields);
-            Yii::$app->db->createCommand($sql)->execute();
-            $this->createClassFile();
-
-            $field = new Field();
-            $field->setAttributes([
-                'module_id' => $this->id,
-                'is_default' => 1,
-                'is_null' => 0,
-                'is_list' => 1,
-                'name' => 'id',
-                'title' => 'ID',
-                'input' => Field::INPUT_INPUT,
-                'type'  => 'int',
-                'size'  => 11
-            ], false);
-            $field->save();
-
-            if ($this->is_user) {
-                $this->createUserFields();
-            }
-
+            $this->createDefaultFields();
         }
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    protected function createDefaultFields()
+    {
+        $fields = [
+            'id' => 'int(11)     UNSIGNED NOT NULL AUTO_INCREMENT',
+            'PRIMARY KEY `id`(`id`)'
+        ];
+        $sql = Yii::$app->db->queryBuilder->createTable($this->getTableName(), $fields);
+        Yii::$app->db->createCommand($sql)->execute();
+        $this->createClassFile();
+
+        $field = new Field();
+        $field->setAttributes([
+            'module_id' => $this->id,
+            'is_default' => 1,
+            'is_null' => 0,
+            'is_list' => 1,
+            'name' => 'id',
+            'title' => 'ID',
+            'input' => Field::INPUT_INPUT,
+            'type'  => 'int',
+            'size'  => 11
+        ], false);
+        $field->save();
+
+        if ($this->is_user) {
+            $this->createUserFields();
+        }
     }
 
     protected function createUserFields()

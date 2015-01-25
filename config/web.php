@@ -129,11 +129,6 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = 'yii\gii\Module';
 }
 
-Yii::$container->setSingleton('UserService', 'app\components\UserService');
-Yii::$container->setSingleton('RoleService', 'app\components\RoleService');
-Yii::$container->setSingleton('SettingService', 'app\components\SettingService');
-Yii::$container->setSingleton('ModuleService', 'app\components\ModuleService');
-Yii::$container->setSingleton('DataService', 'app\components\DataService');
-Yii::$container->setSingleton('FileService', 'app\components\FileService');
+$config['components'] = array_merge($config['components'], require(__DIR__ . '/service.php'));
 
 return $config;

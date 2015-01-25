@@ -4,6 +4,7 @@
 namespace app\components;
 use Yii;
 use app\models\Role;
+use yii\base\Component;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -12,7 +13,7 @@ use yii\web\ForbiddenHttpException;
  * @package app\components
  * @author Jerry Hsia<xiajie9916@gmail.com>
  */
-class RoleService
+class RoleService extends Component
 {
 
     const CACHE_ROLES = 'cache_roles';

@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\App;
 use Yii;
 use yii\web\UploadedFile;
 
@@ -19,7 +18,6 @@ class FileController extends RestController
 
     public function __construct($id, $module, $config = [])
     {
-        $this->fileService = Yii::$container->get('FileService');
         parent::__construct($id, $module, $config);
     }
 
@@ -31,6 +29,6 @@ class FileController extends RestController
     public function actionCreate()
     {
         $uploadedFile = UploadedFile::getInstanceByName('file');
-        return $this->fileService->save($uploadedFile);
+        return Yii::$app->fileService->save($uploadedFile);
     }
 }

@@ -54,7 +54,7 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->user === false) {
-            $this->user = Yii::$container->get('UserService')->loadByIdentity($this->identity);
+            $this->user = Yii::$app->userService->loadByIdentity($this->identity);
         }
         return $this->user;
     }

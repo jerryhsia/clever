@@ -34,12 +34,12 @@ abstract class Base extends ActiveRecord
     {
         $name = end(explode("\\Data", $this->className()));
         $name = strtolower(preg_replace('/((?<=[A-Z])(?=[A-Z]))/', '_', $name));
-        return Yii::$container->get('ModuleService')->getModule($name);
+        return Yii::$app->moduleService->getModule($name);
     }
 
     public function getFields()
     {
-        return Yii::$container->get('ModuleService')->getFields($this->getModule());
+        return Yii::$app->moduleService->getFields($this->getModule());
     }
 
     public function getUser()
@@ -54,7 +54,7 @@ abstract class Base extends ActiveRecord
 
     public function getRoles()
     {
-        $roles = Yii::$container->get('RoleService')->getRoles();
+        $roles = Yii::$app->roleService->getRoles();
 
         $result = [];
         foreach ($this->role_ids as $roleId) {
@@ -69,7 +69,7 @@ abstract class Base extends ActiveRecord
     {
         if ($this->isUser()) {
 
-            $userService = Yii::$container->get('UserService');
+            $userService = Yii::$app->userService;
             $userAttributes = $this->getAttributes();
             $userAttributes['module_id'] = $this->module->id;
             $userAttributes['data_id'] = 0;
@@ -123,7 +123,7 @@ abstract class Base extends ActiveRecord
             }
         }
 
-        $fileService = Yii::$container->get('FileService');
+        $fileService = Yii::$app->fileService;
         foreach ($this->getFields() as $field) {
             if ($field->input == Field::INPUT_FILE) {
                 if (!$insert && isset($changedAttributes[$field['name']])) {
@@ -192,8 +192,8 @@ abstract class Base extends ActiveRecord
             $arr['role_ids_models'] = $this->roles;
         }
 
-        $dataService = Yii::$container->get('DataService');
-        $fileService = Yii::$container->get('FileService');
+        $dataService = Yii::$app->dataService;
+        $fileService = Yii::$app->fileService;
         foreach ($this->getFields() as $field) {
             if ($field->relation_id) {
                 $query = $dataService->search($field->relationModule, ['id' => $this->getAttribute($field->name)]);

@@ -6,11 +6,11 @@ use app\models\Base;
 use app\models\Field;
 use Yii;
 use app\models\Module;
-use app\models\User;
+use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
-class DataService
+class DataService extends Component
 {
     public function save(Module $module, Base $model, array $attributes)
     {
@@ -34,8 +34,7 @@ class DataService
         $query = $className::find();
 
         if ($filters) {
-            /** @var \app\components\ModuleService $moduleService */
-            $moduleService = Yii::$container->get('ModuleService');
+            $moduleService = Yii::$app->moduleService;
             $fields = $moduleService->getFields($module, false);
             $fields = ArrayHelper::index($fields, 'name');
 

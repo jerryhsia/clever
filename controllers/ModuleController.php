@@ -18,14 +18,8 @@ use yii\web\NotFoundHttpException;
 class ModuleController extends RestController
 {
 
-    /**
-     * @var \app\components\ModuleService $moduleService
-     */
-    public $moduleService;
-
     public function __construct($id, $module, $config = [])
     {
-        $this->moduleService = Yii::$container->get('ModuleService');
         parent::__construct($id, $module, $config);
     }
 
@@ -38,7 +32,7 @@ class ModuleController extends RestController
      */
     private function loadModule($id)
     {
-        $module = $this->moduleService->getModule($id);
+        $module = Yii::$app->moduleService->getModule($id);
         if (!$module) {
             throw new NotFoundHttpException(Yii::t('module', 'Module not found'));
         }
@@ -52,7 +46,7 @@ class ModuleController extends RestController
      */
     public function actionIndex()
     {
-        return $this->moduleService->getModules(false);
+        return Yii::$app->moduleService->getModules(false);
     }
 
     /**
@@ -65,7 +59,7 @@ class ModuleController extends RestController
     {
         $array = Yii::$app->request->getBodyParams();
         $module = new Module();
-        $this->moduleService->saveModule($module, $array);
+        Yii::$app->moduleService->saveModule($module, $array);
         return $module;
     }
 
@@ -82,7 +76,7 @@ class ModuleController extends RestController
         $array = Yii::$app->request->getBodyParams();
 
         $module = $this->loadModule($id);
-        $this->moduleService->saveModule($module, $array);
+        Yii::$app->moduleService->saveModule($module, $array);
         return $module;
     }
 
@@ -97,7 +91,7 @@ class ModuleController extends RestController
         $id = Yii::$app->request->getQueryParam('id');
 
         $module = $this->loadModule($id);
-        return $this->moduleService->deleteModule($module);
+        return Yii::$app->moduleService->deleteModule($module);
     }
 
 
@@ -110,7 +104,7 @@ class ModuleController extends RestController
      */
     private function loadField(Module $module, $id)
     {
-        $field = $this->moduleService->getField($module, $id);
+        $field = Yii::$app->moduleService->getField($module, $id);
         if (!$field) {
             throw new NotFoundHttpException(Yii::t('module', 'Field not found'));
         }
@@ -127,7 +121,7 @@ class ModuleController extends RestController
         $moduleId = Yii::$app->request->getQueryParam('id');
         $module = $this->loadModule($moduleId);
 
-        $result = $this->moduleService->getFields($module, false);
+        $result = Yii::$app->moduleService->getFields($module, false);
         return $result;
     }
 
@@ -143,7 +137,7 @@ class ModuleController extends RestController
         $module = $this->loadModule($moduleId);
         $attributes = Yii::$app->request->getBodyParams();
         $field = new Field();
-        $this->moduleService->saveField($module, $field, $attributes);
+        Yii::$app->moduleService->saveField($module, $field, $attributes);
         return $field;
     }
 
@@ -160,7 +154,7 @@ class ModuleController extends RestController
         $module = $this->loadModule($moduleId);
         $field = $this->loadField($module, $fieldId);
         $attributes = Yii::$app->request->getBodyParams();
-        $this->moduleService->saveField($module, $field, $attributes);
+        Yii::$app->moduleService->saveField($module, $field, $attributes);
         return $field;
     }
 
@@ -176,7 +170,7 @@ class ModuleController extends RestController
         $module = $this->loadModule($moduleId);
         $attributes = Yii::$app->request->getBodyParams();
 
-        return $this->moduleService->batchSaveField($module, $attributes);
+        return Yii::$app->moduleService->batchSaveField($module, $attributes);
     }
 
     /**
@@ -191,6 +185,6 @@ class ModuleController extends RestController
         $fieldId = Yii::$app->request->getQueryParam('field_id');
         $module = $this->loadModule($moduleId);
         $field = $this->loadField($module, $fieldId);
-        return $this->moduleService->deleteField($module, $field);
+        return Yii::$app->moduleService->deleteField($module, $field);
     }
 }

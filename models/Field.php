@@ -138,7 +138,7 @@ class Field extends \yii\db\ActiveRecord
 
     public function getModule()
     {
-        return Yii::$container->get('ModuleService')->getModule($this->module_id);
+        return Yii::$app->moduleService->getModule($this->module_id);
     }
 
     public function getModelField()
@@ -157,7 +157,7 @@ class Field extends \yii\db\ActiveRecord
 
     public function getRelationModule()
     {
-        return Yii::$container->get('ModuleService')->getModule($this->relation_id);
+        return Yii::$app->moduleService->getModule($this->relation_id);
     }
 
     public function beforeSave($insert)

@@ -15,14 +15,8 @@ use yii\web\NotFoundHttpException;
  */
 class RoleController extends RestController
 {
-    /**
-     * @var \app\components\RoleService $roleService
-     */
-    public $roleService;
-
     public function __construct($id, $module, $config = [])
     {
-        $this->roleService = Yii::$container->get('RoleService');
         parent::__construct($id, $module, $config);
     }
 
@@ -35,7 +29,7 @@ class RoleController extends RestController
      */
     private function load($id)
     {
-        $role = $this->roleService->findById($id);
+        $role = Yii::$app->roleService->getRole($id);
         if (!$role) {
             throw new NotFoundHttpException(Yii::t('role', 'Role not found'));
         }
@@ -49,7 +43,7 @@ class RoleController extends RestController
      */
     public function actionIndex()
     {
-        return $this->roleService->getRoles(false);
+        return Yii::$app->roleService->getRoles(false);
     }
 
     /**
@@ -62,7 +56,7 @@ class RoleController extends RestController
     {
         $array = Yii::$app->request->getBodyParams();
         $role = new Role();
-        $this->roleService->save($role, $array);
+        Yii::$app->roleService->save($role, $array);
         return $role;
     }
 
@@ -79,7 +73,7 @@ class RoleController extends RestController
         $array = Yii::$app->request->getBodyParams();
 
         $role = $this->load($id);
-        $this->roleService->save($role, $array);
+        Yii::$app->roleService->save($role, $array);
         return $role;
     }
 
@@ -94,6 +88,6 @@ class RoleController extends RestController
         $id = Yii::$app->request->getQueryParam('id');
 
         $role = $this->load($id);
-        return $this->roleService->delete($role);
+        return Yii::$app->roleService->delete($role);
     }
 }

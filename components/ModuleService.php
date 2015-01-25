@@ -6,6 +6,7 @@ namespace app\components;
 use Yii;
 use app\models\Field;
 use app\models\Module;
+use yii\base\Component;
 use yii\db\Migration;
 use yii\helpers\ArrayHelper;
 
@@ -15,7 +16,7 @@ use yii\helpers\ArrayHelper;
  * @package app\components
  * @author Jerry Hsia<xiajie9916@gmail.com>
  */
-class ModuleService
+class ModuleService extends Component
 {
     const CACHE_MODULES = 'cache_modules';
     const CACHE_FIELDS  = 'cache_fields';

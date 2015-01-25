@@ -3,6 +3,7 @@
 
 namespace app\components;
 use app\models\User;
+use yii\base\Component;
 
 /**
  * Class UserService
@@ -10,7 +11,7 @@ use app\models\User;
  * @package app\components
  * @author Jerry Hsia<xiajie9916@gmail.com>
  */
-class UserService
+class UserService extends Component
 {
 
     /**

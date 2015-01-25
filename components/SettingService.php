@@ -4,9 +4,10 @@ namespace app\components;
 
 use Yii;
 use app\models\Setting;
+use yii\base\Component;
 use yii\helpers\ArrayHelper;
 
-class SettingService
+class SettingService extends Component
 {
 
     private $cacheKey = 'settings';

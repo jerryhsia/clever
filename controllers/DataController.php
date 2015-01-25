@@ -3,7 +3,6 @@
 
 namespace app\controllers;
 
-use app\models\Field;
 use Yii;
 use app\models\Module;
 use yii\data\ActiveDataProvider;
@@ -17,20 +16,8 @@ use yii\web\NotFoundHttpException;
  */
 class DataController extends RestController
 {
-    /**
-     * @var \app\components\ModuleService $moduleService
-     */
-    public $moduleService;
-
-    /**
-     * @var \app\components\DataService $dataService
-     */
-    public $dataService;
-
     public function __construct($id, $module, $config = [])
     {
-        $this->moduleService = Yii::$container->get('ModuleService');
-        $this->dataService = Yii::$container->get('DataService');
         parent::__construct($id, $module, $config);
     }
 
@@ -43,7 +30,7 @@ class DataController extends RestController
      */
     private function loadModule($moduleName)
     {
-        $module = $this->moduleService->getModule($moduleName);
+        $module = Yii::$app->moduleService->getModule($moduleName);
         if (!$module) {
             throw new NotFoundHttpException(Yii::t('module', 'Module not found'));
         }
@@ -60,7 +47,7 @@ class DataController extends RestController
      */
     private function loadData($module, $id)
     {
-        $data = $this->dataService->search($module)->andWhere(['id' => $id])->one();
+        $data = Yii::$app->dataService->search($module)->andWhere(['id' => $id])->one();
         if (!$data) {
             throw new NotFoundHttpException(Yii::t('data', 'Data not found'));
         }
@@ -77,7 +64,7 @@ class DataController extends RestController
         $moduleName = Yii::$app->request->getQueryParam('module_name');
         $module = $this->loadModule($moduleName);
         $params = Yii::$app->request->getQueryParams();
-        $query = $this->dataService->search($module, $params);
+        $query = Yii::$app->dataService->search($module, $params);
         return new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -103,7 +90,7 @@ class DataController extends RestController
 
         $className = $module->getFullClassName();
         $model = new $className();
-        $this->dataService->save($module, $model, $array);
+        Yii::$app->dataService->save($module, $model, $array);
         return $model;
     }
 
@@ -122,7 +109,7 @@ class DataController extends RestController
 
         $module = $this->loadModule($moduleName);
         $model = $this->loadData($module, $id);
-        $this->dataService->save($module, $model, $array);
+        Yii::$app->dataService->save($module, $model, $array);
         return $model;
     }
 
@@ -139,7 +126,7 @@ class DataController extends RestController
 
         $module = $this->loadModule($moduleName);
         $model = $this->loadData($module, $id);
-        return $this->dataService->delete($module, $model);
+        return Yii::$app->dataService->delete($module, $model);
     }
 
 }

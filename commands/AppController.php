@@ -3,10 +3,8 @@
 
 namespace app\commands;
 
-use app\components\App;
 use app\models\Module;
 use app\models\Role;
-use app\models\User;
 use Yii;
 use yii\console\Controller;
 
@@ -39,9 +37,9 @@ class AppController extends Controller
 
     public function actionInit()
     {
-        $roleService = Yii::$container->get('RoleService');
-        $moduleService = Yii::$container->get('ModuleService');
-        $dataService = Yii::$container->get('DataService');
+        $roleService = Yii::$app->roleService;
+        $moduleService = Yii::$app->moduleService;
+        $dataService = Yii::$app->dataService;
 
         $role = new Role();
         $attributes = [
