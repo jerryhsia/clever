@@ -23,7 +23,15 @@ class FileController extends RestController
 
     public function actionIndex()
     {
-        echo Yii::getAlias('@webroot');
+        $str = '{id}-{name}';
+        preg_match_all('/\{(.*?)\}/i', $str, $arr3);
+        var_dump($arr3);
+        $arr = ['id' => 1, 'name' => 'Jerry'];
+        $arr2 = [];
+        foreach ($arr as $k => $v) {
+            $arr2[$k] = '{'.$k.'}';
+        }
+        echo str_replace($arr2, $arr, $str);
     }
 
     public function actionCreate()

@@ -147,18 +147,27 @@ class ModuleService extends Component
         return $result;
     }
 
-    public function batchSaveField (Module $module, array $attributes)
+    public function batchSaveField (Module $module, array $array)
     {
         $allowFields = ['sort'];
 
         $result = 0;
-        foreach ($attributes as $attribute) {
-            if (!isset($attribute['id']) || !$attribute['id']) {
+        foreach ($array as $attributes) {
+            if (!isset($attributes['id']) || !$attributes['id']) {
                 continue;
             }
-            $id = $attribute['id'];
-            unset($attribute['id']);
-            $result += Field::updateAll($attribute, ['id' => $id]);
+
+            $id = $attributes['id'];
+            unset($attributes['id']);
+            foreach ($attributes as $key => $value) {
+                if (!in_array($key, $allowFields)) {
+                    unset($attributes[$key]);
+                }
+            }
+
+            if ($attributes) {
+                $result += Field::updateAll($attributes, ['id' => $id, 'module_id' => $module->id]);
+            }
         }
 
         if ($result > 0) {

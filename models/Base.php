@@ -3,9 +3,7 @@
 namespace app\models;
 use app\components\App;
 use Yii;
-use app\models\User;
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 
 abstract class Base extends ActiveRecord
@@ -105,8 +103,6 @@ abstract class Base extends ActiveRecord
                     $value = implode(',', $value);
                     $this->setAttribute($field->name, $value);
                 }
-            } else {
-                $value = $value.'';
             }
         }
 
@@ -218,6 +214,14 @@ abstract class Base extends ActiveRecord
 
     public function getToString()
     {
-        return $this->name;
+        $fields = $this->getModule()->getToStringFields();
+        $arr = [];
+        $data = [];
+        foreach ($fields as $field) {
+            $arr[$field] = sprintf('{%s}', $field);
+            $data[$field] = $this->getAttribute($field);
+        }
+
+        return str_replace($arr, $data, $this->getModule()->to_string);
     }
 }

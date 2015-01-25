@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -12,22 +13,28 @@ use yii\web\ForbiddenHttpException;
  * @property string $name
  * @property string $title
  * @property string $is_user
+ * @property string $to_string
  */
-class Module extends \yii\db\ActiveRecord
+class Module extends ActiveRecord
 {
     const DEFAULT_MODULE_ID = 1;
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%module}}';
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('module', 'ID'),
+            'name' => Yii::t('module', 'Name'),
+            'title' => Yii::t('module', 'Title'),
+            'is_user' => Yii::t('module', 'Is User module'),
+            'to_string' => Yii::t('module', 'To String')
+        ];
+    }
+
     public function rules()
     {
         return [
@@ -35,19 +42,6 @@ class Module extends \yii\db\ActiveRecord
             [['name', 'title'], 'string', 'max' => 50],
             ['name', 'filter', 'filter' => 'strtolower'],
             ['name', 'validateName']
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('module', 'ID'),
-            'name' => Yii::t('module', 'Name'),
-            'title' => Yii::t('module', 'Title'),
-            'is_user' => Yii::t('module', 'User module'),
         ];
     }
 
@@ -74,9 +68,37 @@ class Module extends \yii\db\ActiveRecord
                 $this->setAttribute($field, $this->getOldAttribute($field));
             }
         }
+        if (empty($this->to_string)) {
+            $this->to_string = '{id}';
+        }
+
         return parent::beforeSave($insert);
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $this->createDefaultFields();
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function beforeDelete()
+    {
+        parent::beforeDelete();
+        if ($this->id == self::DEFAULT_MODULE_ID) {
+            throw new ForbiddenHttpException(Yii::t('module', 'Default module cannot be deleted'));
+        }
+        return true;
+    }
+
+    public function afterDelete ()
+    {
+        $sql = Yii::$app->db->queryBuilder->dropTable($this->getTableName());
+        Yii::$app->db->createCommand($sql)->execute();
+        @unlink($this->getClassFile());
+        parent::afterDelete();
+    }
 
     public function getTableName ()
     {
@@ -113,16 +135,9 @@ class Module extends \yii\db\ActiveRecord
         fclose($fp);
     }
 
-    public function afterSave($insert, $changedAttributes)
-    {
-        if ($insert) {
-            $this->createDefaultFields();
-        }
-        parent::afterSave($insert, $changedAttributes);
-    }
-
     protected function createDefaultFields()
     {
+        define('CREATE_DEFAULT_FIELDS', true);
         $fields = [
             'id' => 'int(11)     UNSIGNED NOT NULL AUTO_INCREMENT',
             'PRIMARY KEY `id`(`id`)'
@@ -209,20 +224,16 @@ class Module extends \yii\db\ActiveRecord
         }
     }
 
-    public function beforeDelete()
+    private static $_toStringFields = false;
+
+    public function getToStringFields ()
     {
-        parent::beforeDelete();
-        if ($this->id == self::DEFAULT_MODULE_ID) {
-            throw new ForbiddenHttpException(Yii::t('module', 'Default module cannot be deleted'));
+        if (self::$_toStringFields === false) {
+            preg_match_all('/\{(.*?)\}/i', $this->to_string, $arr);
+            self::$_toStringFields = $arr[1];
         }
-        return true;
+
+        return self::$_toStringFields;
     }
 
-    public function afterDelete ()
-    {
-        $sql = Yii::$app->db->queryBuilder->dropTable($this->getTableName());
-        Yii::$app->db->createCommand($sql)->execute();
-        @unlink($this->getClassFile());
-        parent::afterDelete();
-    }
 }

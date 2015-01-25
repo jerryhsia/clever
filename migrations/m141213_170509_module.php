@@ -17,6 +17,7 @@ class m141213_170509_module extends Migration
             'name'       => 'varchar(50) NOT NULL',
             'title'      => 'varchar(50) NOT NULL',
             'is_user'    => 'tinyint(1)  NOT NULL DEFAULT 0',
+            'to_string'  => 'varchar(200) NOT NULL',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
 

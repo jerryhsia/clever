@@ -3,10 +3,11 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
 
 /**
- * This is the model class for table "clever_field".
+ * This is the model class for table "field".
  *
  * @property integer $id
  * @property integer $module_id
@@ -24,7 +25,7 @@ use yii\web\ForbiddenHttpException;
  * @property array $option
  * @property integer $sort
  */
-class Field extends \yii\db\ActiveRecord
+class Field extends ActiveRecord
 {
 
     const INPUT_INPUT = 'input';
@@ -41,17 +42,39 @@ class Field extends \yii\db\ActiveRecord
     const RELATION_HAS_ONE = 'has_one';
     const RELATION_HAS_MANY = 'has_many';
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%field}}';
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function attributeLabels()
+    {
+        return [
+            'id'        => Yii::t('field', 'ID'),
+            'module_id' => Yii::t('field', 'Module ID'),
+            'name'      => Yii::t('field', 'Name'),
+            'title'     => Yii::t('field', 'Title'),
+            'inupt'     => Yii::t('field', 'Input'),
+            'type'      => Yii::t('field', 'Type'),
+            'size'      => Yii::t('field', 'Size'),
+            'relation_type' => Yii::t('field', 'Relation Type'),
+            'option'    => Yii::t('field', 'Option')
+        ];
+    }
+
+    public function fields()
+    {
+        return parent::fields() + [
+            'is_user_field' => 'isUserField',
+            'has_relation' => 'hasRelation',
+            'module' => 'module',
+            'relation_module' => 'relationModule',
+            'model_field' => 'modelField',
+            'is_multiple' => 'isMultiple',
+            'is_from_source' => 'isFromSource'
+        ];
+    }
+
     public function rules()
     {
         return [
@@ -59,7 +82,7 @@ class Field extends \yii\db\ActiveRecord
             [['module_id'], 'integer'],
             [['name', 'title', 'input'], 'string', 'max' => 50],
             ['name', 'validateName'],
-            ['name', 'validateInput'],
+            ['input', 'validateInput'],
             ['name', 'unique', 'when' => function() {
                 return $this->name && !$this->hasErrors();
             }, 'filter' => 'module_id = '.$this->module_id]
@@ -107,73 +130,28 @@ class Field extends \yii\db\ActiveRecord
         }
     }
 
-    public function fields()
-    {
-        return parent::fields() + [
-            'can_edit' => 'canEdit',
-            'is_user_field' => 'isUserField',
-            'has_relation' => 'hasRelation',
-            'module' => 'module',
-            'relation_module' => 'relationModule',
-            'model_field' => 'modelField',
-            'is_multiple' => 'isMultiple',
-            'is_from_source' => 'isFromSource'
-        ];
-    }
-
-    public function attributeLabels()
-    {
-        return [
-            'id'        => Yii::t('field', 'ID'),
-            'module_id' => Yii::t('field', 'Module ID'),
-            'name'      => Yii::t('field', 'Name'),
-            'title'     => Yii::t('field', 'Title'),
-            'inupt'     => Yii::t('field', 'Input'),
-            'type'      => Yii::t('field', 'Type'),
-            'size'      => Yii::t('field', 'Size'),
-            'relation_type' => Yii::t('field', 'Relation Type'),
-            'option'    => Yii::t('field', 'Option')
-        ];
-    }
-
-    public function getModule()
-    {
-        return Yii::$app->moduleService->getModule($this->module_id);
-    }
-
-    public function getModelField()
-    {
-        return $this->name.($this->getIsMultiple() ? '_models': '_model');
-    }
-
-    public function getIsMultiple()
-    {
-        return in_array($this->input, [
-            Field::INPUT_MULTIPLE_SELECT,
-            Field::INPUT_MULTIPLE_FILE,
-            Field::INPUT_CHECKBOX
-        ]);
-    }
-
-    public function getRelationModule()
-    {
-        return Yii::$app->moduleService->getModule($this->relation_id);
-    }
-
     public function beforeSave($insert)
     {
-        if (!$insert) {
-            $fields = ['name', 'type', 'input', 'relation_id', 'relation_type'];
+        if ($insert) {
+            $max = self::find()->andWhere(['module_id' => $this->module_id])->max('sort');
+            $this->sort = intval($max) + 1;
+
+            $this->type = empty($this->type) ? 'varchar': $this->type;
+            if (in_array($this->input, [self::INPUT_TEXTAREA, self::INPUT_EDITOR])) {
+                $this->type = 'text';
+            }
+
+            if (!defined('CREATE_DEFAULT_FIELDS')) {
+                $this->is_default = 0;
+            }
+        } else {
+            $fields = ['name', 'type', 'input', 'relation_id', 'relation_type', 'is_default'];
             foreach ($fields as $field) {
                 $this->setAttribute($field, $this->getOldAttribute($field));
             }
         }
 
         $this->size = intval($this->size) ? intval($this->size) : 200;
-        $this->type = empty($this->type) ? 'varchar': $this->type;
-        if (in_array($this->input, [self::INPUT_TEXTAREA, self::INPUT_EDITOR])) {
-            $this->type = 'text';
-        }
 
         if (is_array($this->option)) {
             $this->option = implode(',', $this->option);
@@ -181,21 +159,7 @@ class Field extends \yii\db\ActiveRecord
             $this->option = str_replace('，', ',', $this->option);
         }
 
-        if ($insert) {
-            $max = self::find()->andWhere(['module_id' => $this->module_id])->max('sort');
-            $this->sort = intval($max) + 1;
-        }
-
         return parent::beforeSave($insert);
-    }
-
-    public function getColumnString ()
-    {
-        if ($this->type == 'text') {
-            return sprintf('%s %s', $this->type, $this->is_null ? 'NULL' : "NOT NULL");
-        } else {
-            return sprintf('%s(%d) %s', $this->type, $this->size, $this->is_null ? 'NULL' : "NOT NULL");
-        }
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -206,7 +170,7 @@ class Field extends \yii\db\ActiveRecord
                 Yii::$app->db->createCommand($sql)->execute();
             }
         } else {
-            if (isset($changedAttributes['type']) || isset($changedAttributes['size'])) {
+            if (isset($changedAttributes['size'])) {
                 $sql = Yii::$app->db->queryBuilder->alterColumn($this->module->getTableName(), $this->name, $this->getColumnString());
                 Yii::$app->db->createCommand($sql)->execute();
             }
@@ -238,15 +202,38 @@ class Field extends \yii\db\ActiveRecord
         parent::afterDelete();
     }
 
-    public function getCanEdit()
+    public function getModule()
     {
-        $fields = ['id'];
+        return Yii::$app->moduleService->getModule($this->module_id);
+    }
 
-        if ($this->module->is_user) {
-            $fields = array_merge($fields, ['user_id']);
+    public function getModelField()
+    {
+        return $this->name.($this->getIsMultiple() ? '_models': '_model');
+    }
+
+    public function getIsMultiple()
+    {
+        return in_array($this->input, [
+            Field::INPUT_MULTIPLE_SELECT,
+            Field::INPUT_MULTIPLE_FILE,
+            Field::INPUT_CHECKBOX
+        ]);
+    }
+
+    public function getRelationModule()
+    {
+        return Yii::$app->moduleService->getModule($this->relation_id);
+    }
+
+
+    public function getColumnString ()
+    {
+        if ($this->type == 'text') {
+            return sprintf('%s %s', $this->type, $this->is_null ? 'NULL' : "NOT NULL");
+        } else {
+            return sprintf('%s(%d) %s', $this->type, $this->size, $this->is_null ? 'NULL' : "NOT NULL");
         }
-
-        return !in_array($this->name, $fields);
     }
 
     public function getIsUserField()
