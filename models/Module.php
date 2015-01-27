@@ -224,16 +224,16 @@ class Module extends ActiveRecord
         }
     }
 
-    private static $_toStringFields = false;
+    private static $_toStringFields = [];
 
     public function getToStringFields ()
     {
-        if (self::$_toStringFields === false) {
+        if (!isset(self::$_toStringFields[$this->id])) {
             preg_match_all('/\{(.*?)\}/i', $this->to_string, $arr);
-            self::$_toStringFields = $arr[1];
+            self::$_toStringFields[$this->id] = $arr[1];
         }
 
-        return self::$_toStringFields;
+        return self::$_toStringFields[$this->id];
     }
 
 }

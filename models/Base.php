@@ -21,23 +21,19 @@ abstract class Base extends ActiveRecord
     {
         $fields = parent::extraFields();
 
-        if ($this->isUser()) {
-            $fields['roles'] = 'roles';
-        }
-
         return $fields;
     }
 
-    private static $_module = false;
+    private static $_modules = [];
 
     public function getModule()
     {
-        if (self::$_module === false) {
-            $name = end(explode("\\Data", $this->className()));
+        $name = end(explode("\\Data", $this->className()));
+        if (!isset(self::$_modules[$name])) {
             $name = strtolower(preg_replace('/((?<=[A-Z])(?=[A-Z]))/', '_', $name));
-            self::$_module = Yii::$app->moduleService->getModule($name);
+            self::$_modules[$name] = Yii::$app->moduleService->getModule($name);
         }
-        return self::$_module;
+        return self::$_modules[$name];
     }
 
     public function getFields()
@@ -47,20 +43,7 @@ abstract class Base extends ActiveRecord
 
     public function isUser()
     {
-        return boolval($this->getModule()->is_user);
-    }
-
-    public function getRoles()
-    {
-        $roles = Yii::$app->roleService->getRoles();
-
-        $result = [];
-        foreach ($this->role_ids as $roleId) {
-            if (isset($roles[$roleId])) {
-                $result[] = $roles[$roleId];
-            }
-        }
-        return $result;
+        return $this->getModule()->is_user;
     }
 
     public function beforeSave($insert)
@@ -180,12 +163,25 @@ abstract class Base extends ActiveRecord
         }
     }
 
+    public function getRoles()
+    {
+        $roles = Yii::$app->roleService->getRoles();
+
+        $result = [];
+        foreach ($this->role_ids as $roleId) {
+            if (isset($roles[$roleId])) {
+                $result[] = $roles[$roleId];
+            }
+        }
+        return $result;
+    }
+
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         $arr = parent::toArray($fields, $expand, $recursive);
 
         if ($this->isUser()) {
-            $arr['role_ids_models'] = $this->roles;
+            $arr['role_ids_models'] = $this->getRoles();
         }
 
         $dataService = Yii::$app->dataService;
