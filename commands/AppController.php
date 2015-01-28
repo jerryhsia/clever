@@ -80,9 +80,8 @@ class AppController extends Controller
 
     public function actionSet()
     {
-        $settingService = Yii::$container->get('SettingService');
         foreach (Yii::$app->params as $key => $value) {
-            $settingService->set($key, $value);
+            Yii::$app->settingService->set($key, $value);
         }
     }
 }

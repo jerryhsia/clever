@@ -14,7 +14,7 @@ class m138791_758283_setting extends Migration
 
         $this->createTable('{{%setting}}', [
             'name'   => 'varchar(20) NOT NULL',
-            'value'  => 'varchar(50) NULL',
+            'value'  => 'text NULL',
             'type'   => 'varchar(15) NOT NULL DEFAULT \'string\'',
             'PRIMARY KEY `name`(`name`)'
         ], $tableOptions);

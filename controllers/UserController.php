@@ -52,14 +52,19 @@ class UserController extends RestController
      */
     public function actionLogin()
     {
-        $model = new LoginForm();
-        $model->load(Yii::$app->request->getBodyParams(), '');
+        $user = Yii::$app->user->getIdentity();
+        if ($user) {
+            return $user;
+        } else {
+            $model = new LoginForm();
+            $model->load(Yii::$app->request->getBodyParams(), '');
 
-        if (!$model->login()) {
-            return $model;
+            if (!$model->login()) {
+                return $model;
+            }
+
+            return $model->getUser();
         }
-
-        return $model->getUser();
     }
 
 }

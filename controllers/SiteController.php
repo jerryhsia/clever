@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\components\App;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -39,14 +40,20 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $rs = Yii::$app->mailer->compose('test/test')
-            ->setFrom('nldy9916@163.com')
-            ->setTo('82269916@qq.com')
-            ->setSubject('test')
-            ->setHtmlBody('test')
-            ->send();
-        var_dump($rs);
-        exit('index');
+        $user = Yii::$app->user->getIdentity();
+        App::dump($user);
+        exit;
+    }
+
+    public function actionLogin()
+    {
+        echo '<form method="post" action="/users/authentication">
+    <input type="text" name="identity">
+    <input type="password" name="password">
+    <input type="hidden" name="remember" value="1">
+    <input type="submit">
+</form>';
+        exit;
     }
 
 }

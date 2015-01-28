@@ -116,6 +116,9 @@ $config = [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser'
             ]
+        ],
+        'session' => [
+            'savePath' => __DIR__ . '/../runtime/session',
         ]
     ],
     'params' => require(__DIR__ . '/params.php'),

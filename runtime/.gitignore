@@ -1,2 +1,4 @@
 *
+session/*
+!session/.gitkeep
 !.gitignore
