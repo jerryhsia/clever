@@ -27,8 +27,6 @@ class m130524_201442_user extends Migration
             'username' => 'varchar(50) NOT NULL',
             'email'    => 'varchar(50) NOT NULL',
             'password' => 'varchar(32) NOT NULL',
-            'auth_key' => 'varchar(32) NULL',
-            'access_token' => 'varchar(32) NULL',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
 

@@ -20,31 +20,6 @@ class UserController extends RestController
     }
 
     /**
-     * GET /users
-     *
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $params = Yii::$app->request->getQueryParams();
-        return Yii::$app->userService->search($params)->all();
-    }
-
-    /**
-     * POST /users
-     *
-     * @return User
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function actionCreate()
-    {
-        $attributes = Yii::$app->request->getBodyParams();
-        $user = new User();
-        Yii::$app->userService->save($user, $attributes);
-        return $user;
-    }
-
-    /**
      * POST /users/authentication
      *
      * @return LoginForm|bool
@@ -59,11 +34,13 @@ class UserController extends RestController
             $model = new LoginForm();
             $model->load(Yii::$app->request->getBodyParams(), '');
 
-            if (!$model->login()) {
+            if ($token = Yii::$app->userService->login($model)) {
+                return array_merge($model->getUser()->toArray(), [
+                    'access_token' => $token
+                ]);
+            } else {
                 return $model;
             }
-
-            return $model->getUser();
         }
     }
 

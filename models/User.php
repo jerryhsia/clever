@@ -87,7 +87,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return ['name' => 'jerry'];
+        return Yii::$app->userService->getIdByAccessToken($token);
     }
 
     /**
@@ -103,7 +103,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->auth_key;
+        return $this->id;
     }
 
     /**

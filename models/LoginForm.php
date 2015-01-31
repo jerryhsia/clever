@@ -42,19 +42,10 @@ class LoginForm extends Model
         }
     }
 
-    public function login()
-    {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->remember ? 7 * 24 * 3600 : 0);
-        } else {
-            return false;
-        }
-    }
-
     public function getUser()
     {
         if ($this->user === false) {
-            $this->user = Yii::$app->userService->loadByIdentity($this->identity);
+            $this->user = Yii::$app->userService->getUserByIdentity($this->identity);
         }
         return $this->user;
     }
