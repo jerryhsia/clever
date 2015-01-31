@@ -4,7 +4,6 @@
 namespace app\controllers;
 use app\models\LoginForm;
 use Yii;
-use app\models\User;
 
 /**
  * Class UserController
@@ -14,6 +13,9 @@ use app\models\User;
  */
 class UserController extends RestController
 {
+
+    public $allowGuest = true;
+
     public function __construct($id, $module, $config = [])
     {
         parent::__construct($id, $module, $config);
@@ -42,6 +44,11 @@ class UserController extends RestController
                 return $model;
             }
         }
+    }
+
+    public function actionIndex()
+    {
+        return [];
     }
 
 }

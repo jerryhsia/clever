@@ -16,6 +16,16 @@ use yii\web\NotFoundHttpException;
  */
 class DataController extends RestController
 {
+
+    public function accessRules()
+    {
+        return [
+            [
+                'allow' => true
+            ]
+        ];
+    }
+
     public function __construct($id, $module, $config = [])
     {
         parent::__construct($id, $module, $config);

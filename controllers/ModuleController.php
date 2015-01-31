@@ -18,6 +18,16 @@ use yii\web\NotFoundHttpException;
 class ModuleController extends RestController
 {
 
+    public function accessRules()
+    {
+        return [
+            [
+                'allow' => true,
+                //'roles' => ['@'],
+            ]
+        ];
+    }
+
     public function __construct($id, $module, $config = [])
     {
         parent::__construct($id, $module, $config);

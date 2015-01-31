@@ -2,6 +2,8 @@
 
 
 namespace app\controllers;
+use app\filters\AuthFilter;
+use yii\filters\AccessControl;
 use yii\rest\Controller;
 
 
@@ -13,9 +15,16 @@ use yii\rest\Controller;
  */
 class RestController extends Controller
 {
+
+    protected $allowGuest = false;
+
     public function accessRules()
     {
-        return [];
+        return [
+            [
+                'allow' => true
+            ]
+        ];
     }
 
     public function actions()
@@ -30,16 +39,19 @@ class RestController extends Controller
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
-            /*'corsFilter' => [
-                'class' => \yii\filters\Cors::className(),
-                'cors' => [
-                    'Origin' => ['*'],
-                    'Access-Control-Request-Method' => ['POST', 'PUT', 'DELETE'],
-                    'Access-Control-Allow-Credentials' => true,
-                    'Access-Control-Max-Age' => 0,
-                ],
-
-            ],*/
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => array_merge([
+                    [
+                        'allow' => true,
+                        'actions' => ['options']
+                    ],
+                ], $this->accessRules())
+            ],
+            'authenticator' => [
+                'class' => AuthFilter::className(),
+                'allowGuest' => $this->allowGuest
+            ]
         ]);
     }
 

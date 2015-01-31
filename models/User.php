@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\App;
+use Codeception\Command\SelfUpdate;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -79,7 +80,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return User::find()->andWhere(['id' => $id])->one();
+        return self::find()->andWhere(['id' => $id])->one();
     }
 
     /**
@@ -87,7 +88,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return Yii::$app->userService->getIdByAccessToken($token);
+        return  Yii::$app->userService->getIdentityByAccessToken($token);
     }
 
     /**

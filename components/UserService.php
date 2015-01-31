@@ -70,14 +70,14 @@ class UserService extends Component
             $time = $loginForm->remember ? 7 * 24 * 3600 : 0;
             Yii::$app->user->login($user, $time);
             $accessToken = md5(uniqid().$loginForm->identity);
-            Yii::$app->cache->set('user_'.$accessToken, $user->id, $time);
+            Yii::$app->cache->set('user_'.$accessToken, $user, $time);
             return $accessToken;
         } else {
             return false;
         }
     }
 
-    public function getIdByAccessToken($accessToken)
+    public function getIdentityByAccessToken($accessToken)
     {
         return Yii::$app->cache->get('user_'.$accessToken);
     }
