@@ -172,7 +172,7 @@ class Module extends ActiveRecord
                 'name' => 'user_id',
                 'type' => 'int',
                 'size' => 11,
-                'is_list' => 1
+                'is_list' => 0
             ],
             [
                 'name' => 'name',

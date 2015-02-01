@@ -71,7 +71,9 @@ class Field extends ActiveRecord
             'relation_module' => 'relationModule',
             'model_field' => 'modelField',
             'is_multiple' => 'isMultiple',
-            'is_from_source' => 'isFromSource'
+            'is_from_source' => 'isFromSource',
+            'can_edit' => 'canEdit',
+            'can_search' => 'canSearch',
         ];
     }
 
@@ -238,7 +240,7 @@ class Field extends ActiveRecord
 
     public function getIsUserField()
     {
-        return in_array($this->name, ['name', 'username', 'password', 'email', 'role_ids']);
+        return in_array($this->name, ['user_id', 'name', 'username', 'password', 'email', 'role_ids']);
     }
 
     public function getHasRelation()
@@ -253,5 +255,25 @@ class Field extends ActiveRecord
         }
 
         return $this->relation_id > 0;
+    }
+
+    public function getCanEdit()
+    {
+        $fields = ['id'];
+        if ($this->getModule()->is_user) {
+            $fields[] = 'user_id';
+        }
+
+        return !in_array($this->name, $fields);
+    }
+
+    public function getCanSearch()
+    {
+        $fields = ['id'];
+        if ($this->getModule()->is_user) {
+            $fields = array_merge($fields, ['user_id', 'password']);
+        }
+
+        return !in_array($this->name, $fields);
     }
 }
