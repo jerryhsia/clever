@@ -25,7 +25,20 @@ class AppBehavior extends Behavior
 
     public function onBeforeRequest($event)
     {
+        $lang = Yii::$app->request->getQueryParam('_lang');
+        if (strpos($lang, '-') !== false) {
+            $lang = explode('-', $lang);
+            $lang[1] = strtoupper($lang[1]);
+            $lang = implode('-', $lang);
+        } else {
+            $lang = Yii::$app->request->getHeaders()->get('Accept-Language');
+        }
 
+        if (in_array($lang, ['zh-CN', 'en-US'])) {
+            Yii::$app->language = $lang;
+        } else {
+            Yii::$app->language = 'en-US';
+        }
     }
 
     public function onBeforeAction($event)
