@@ -85,9 +85,6 @@ class RoleService extends Component
      */
     public function delete(Role $role)
     {
-        if ($role->is_super) {
-            throw new ForbiddenHttpException(Yii::t('role', 'Super role can\'t be deleted'));
-        }
         $result = $role->delete() === false ? false : true;
         if ($result) {
             $this->clearCache();

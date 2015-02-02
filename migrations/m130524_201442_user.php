@@ -16,6 +16,7 @@ class m130524_201442_user extends Migration
         $this->createTable('{{%role}}', [
             'id'   => 'smallint(1) UNSIGNED NOT NULL AUTO_INCREMENT',
             'name' => 'varchar(50) NOT NULL',
+            'permission' => 'text NULL',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
 
