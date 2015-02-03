@@ -61,21 +61,6 @@ class Role extends ActiveRecord
         return $this->name;
     }
 
-    public function beforeSave($insert)
-    {
-        $this->permission = is_array($this->permission) && $this->permission ? json_encode($this->permission, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : json_encode([
-            'data_permission' => ['list' => false, 'create' => false, 'update' => false, 'view' => false, 'delete' => false],
-            'data_condition' => '',
-            'field_permission' => ['id' => ['create' => false, 'update' => false, 'view' => false]],
-        ]);
-        return parent::beforeSave($insert);
-    }
-
-    public function afterFind()
-    {
-        $this->permission = empty($this->permission) ? [] : json_decode($this->permission, true);
-    }
-
     public function beforeDelete() {
         if ($this->id == self::DEFAULT_ROLE_ID) {
             throw new ForbiddenHttpException(Yii::t('role', 'Default role can\'t be deleted'));

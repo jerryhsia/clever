@@ -2,6 +2,7 @@
 
 
 namespace app\components;
+use app\models\RolePermission;
 use Yii;
 use app\models\Role;
 use yii\base\Component;
@@ -90,5 +91,31 @@ class RoleService extends Component
             $this->clearCache();
         }
         return $result;
+    }
+
+    public function getPermissions(Role $role, $filters)
+    {
+        $query = RolePermission::find();
+
+        $query->andFilterWhere(['role_id' => $role->id]);
+
+        if ($filters['module_id']) {
+            $query->andFilterWhere(['module_id' => $filters['module_id']]);
+        }
+
+        return $query;
+    }
+
+    public function savePermission(Role $role, array $attributes)
+    {
+        $model = $this->getPermissions($role, ['module_id' => $attributes['module_id']])->one();
+        if (!$model) {
+            $model = new RolePermission();
+        }
+        $model->setAttributes($attributes, false);
+
+        $model->save();
+
+        return $model;
     }
 }

@@ -70,6 +70,8 @@ $config = [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'role',
                     'extraPatterns' => [
+                        'GET <id>/permissions' => 'get-permission',
+                        'POST <id>/permissions' => 'update-permission',
                         'OPTIONS <any:.*>' => 'options'
                     ]
                 ],
