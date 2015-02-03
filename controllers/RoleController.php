@@ -106,7 +106,7 @@ class RoleController extends RestController
         $this->checkModuleId($moduleId);
 
         $role = $this->load($id);
-        $model = Yii::$app->roleService->getPermissions($role, ['module_id' => $moduleId])->one();
+        $model = Yii::$app->roleService->getPermissions($role, $moduleId);
 
         return $model;
     }

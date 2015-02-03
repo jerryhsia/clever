@@ -6,6 +6,7 @@ use app\models\RolePermission;
 use Yii;
 use app\models\Role;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -93,19 +94,53 @@ class RoleService extends Component
         return $result;
     }
 
-    public function getPermissions(Role $role, $filters)
+    /**
+     * Get Permissions
+     *
+     * @param Role $role
+     * @param array $filters
+     * @return array|mixed|\yii\db\ActiveRecord|\yii\db\ActiveRecord[]
+     */
+    public function getPermissions(Role $role, $moduleId = null)
     {
-        $query = RolePermission::find();
+        $cacheKey = 'permissions';
+        $permissions = [];
 
-        $query->andFilterWhere(['role_id' => $role->id]);
-
-        if ($filters['module_id']) {
-            $query->andFilterWhere(['module_id' => $filters['module_id']]);
+        if (Yii::$app->cache->exists($cacheKey)) {
+            $permissions = Yii::$app->cache->get($cacheKey);
+        } else {
+            $result = RolePermission::find()->all();
+            $temp = [];
+            foreach ($result as $row) {
+                $temp[$row->role_id][$row->module_id] = $row;
+            }
+            $permissions = $temp;
+            Yii::$app->cache->set($cacheKey, $permissions);
         }
 
-        return $query;
+        $result = [];
+        if (isset($permissions[$role->id])) {
+            $result = $permissions[$role->id];
+        }
+
+        if (!$moduleId) {
+            return $result;
+        }
+
+        if (isset($result[$moduleId])) {
+            return $result[$moduleId];
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * Save Permission
+     *
+     * @param Role $role
+     * @param array $attributes
+     * @return RolePermission
+     */
     public function savePermission(Role $role, array $attributes)
     {
         $model = $this->getPermissions($role, ['module_id' => $attributes['module_id']])->one();
