@@ -63,7 +63,10 @@ class Role extends ActiveRecord
 
     public function beforeDelete() {
         if ($this->id == self::DEFAULT_ROLE_ID) {
-            throw new ForbiddenHttpException(Yii::t('role', 'Default role can\'t be deleted'));
+            throw new ForbiddenHttpException(Yii::t('role', 'Default role can not be deleted'));
+        }
+        if (UserRole::find()->andWhere(['role_id' => $this->id])->count()) {
+            throw new ForbiddenHttpException(Yii::t('role', 'This role has been used, can not be deleted'));
         }
         return true;
     }
