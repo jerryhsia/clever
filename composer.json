@@ -11,7 +11,9 @@
         "yiisoft/yii2": "2.0.2",
         "yiisoft/yii2-bootstrap": "2.0.2",
         "yiisoft/yii2-swiftmailer": "2.0.2",
-        "yiisoft/yii2-redis": "2.0.2"
+        "yiisoft/yii2-redis": "2.0.2",
+        "phpoffice/phpexcel": "1.8.0",
+        "jerryhsia/php-exporter": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "2.0.2",

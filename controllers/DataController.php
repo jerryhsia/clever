@@ -3,9 +3,13 @@
 
 namespace app\controllers;
 
+use jerryhsia\JsonExporter;
 use Yii;
 use app\models\Module;
 use yii\data\ActiveDataProvider;
+use yii\data\Sort;
+use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -71,19 +75,25 @@ class DataController extends RestController
      */
     public function actionIndex()
     {
+        $export = Yii::$app->request->getQueryParam('export', false);
         $moduleName = Yii::$app->request->getQueryParam('module_name');
         $module = $this->loadModule($moduleName);
         $params = Yii::$app->request->getQueryParams();
         $query = Yii::$app->dataService->search($module, $params);
-        return new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => Yii::$app->request->getQueryParam('per_page')
-            ],
-            'sort' => [
-                'enableMultiSort' => true
-            ]
-        ]);
+
+        if ($export) {
+            Yii::$app->dataService->export($module, $query);
+        } else {
+            return new ActiveDataProvider([
+                'query' => $query,
+                'pagination' => [
+                    'pageSize' => Yii::$app->request->getQueryParam('per_page')
+                ],
+                'sort' => [
+                    'enableMultiSort' => true
+                ]
+            ]);
+        }
     }
 
     /**

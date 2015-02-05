@@ -4,9 +4,12 @@ namespace app\components;
 
 use app\models\Base;
 use app\models\Field;
+use jerryhsia\JsonExporter;
 use Yii;
 use app\models\Module;
 use yii\base\Component;
+use yii\data\Sort;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
@@ -103,5 +106,58 @@ class DataService extends Component
             $transaction->rollBack();
         }
         return $result;
+    }
+
+    public function export(Module $module, ActiveQuery $query)
+    {
+        $format = strtolower(Yii::$app->request->getQueryParam('format'));
+        $mode = Yii::$app->request->getQueryParam('mode', 'origin');
+        $exportFields = Yii::$app->request->getQueryParam('fields', '');
+        $exportFields = explode(',', $exportFields);
+
+        $sort = new Sort(['attributes' => $exportFields]);
+        $query->orderBy($sort->getAttributeOrders());
+
+        $datas = [];
+        if ($mode == 'detail') {
+            $fields = Yii::$app->moduleService->getFields($module);
+            $fields = ArrayHelper::index($fields, 'name');
+            $relationFields = [];
+            foreach ($fields as $field) {
+                if ($field->getHasRelation()) {
+                    $relationFields[] = $field->name;
+                }
+            }
+
+            $i = 0;
+            foreach ($query->all() as $data) {
+                $datas[$i] = $data->toArray();
+                foreach ($relationFields as $key) {
+                    if ($datas[$i][$fields[$key]->getModelField()]) {
+                        $datas[$i][$key] = [];
+                        foreach ($datas[$i][$fields[$key]->getModelField()] as $model) {
+                            $datas[$i][$key][] = $model->getToString();
+                        }
+                    } else {
+                        $datas[$i][$key] = $datas[$i][$fields[$key]->getModelField()]->getToString();
+                    }
+                    unset($datas[$i][$fields[$key]->getModelField()]);
+                }
+                $i++;
+            }
+        } else {
+            $datas = ArrayHelper::toArray($query->all(), $exportFields);
+        }
+
+        if ($format == 'json') {
+            $exporter = new JsonExporter([
+                'filename' => $module->name.'_'.time().rand(1000, 9999).'.json',
+                'fields' => $exportFields,
+                'data' => $datas,
+            ]);
+            $exporter->send();
+        } else if ($format == 'xls' || $format == 'xlsx') {
+
+        }
     }
 }

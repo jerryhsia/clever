@@ -2,6 +2,7 @@
 namespace app\controllers;
 
 use app\components\App;
+use jerryhsia\JsonExporter;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -33,27 +34,19 @@ class SiteController extends Controller
             ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                'fixedVerifyCode' => YII_ENV_TEST ? 'test' : null,
             ],
         ];
     }
 
     public function actionIndex()
     {
-        $user = Yii::$app->user->getIdentity();
-        App::dump($user);
-        exit;
+        exit('Access error');
     }
 
     public function actionLogin()
     {
-        echo '<form method="post" action="/users/authentication">
-    <input type="text" name="identity">
-    <input type="password" name="password">
-    <input type="hidden" name="remember" value="1">
-    <input type="submit">
-</form>';
-        exit;
+        exit('Access error');
     }
 
 }

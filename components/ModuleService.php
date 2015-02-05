@@ -124,7 +124,7 @@ class ModuleService extends Component
      *
      * @param Module $module
      * @param bool $isIndexed
-     * @return array
+     * @return Field[]
      */
     public function getFields(Module $module, $isIndexed = true)
     {
