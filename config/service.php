@@ -18,6 +18,9 @@ return [
     ],
     'settingService' => [
         'class' => 'app\components\SettingService',
+    ],
+    'logService' => [
+        'class' => 'app\components\logService',
     ]
 ];
 

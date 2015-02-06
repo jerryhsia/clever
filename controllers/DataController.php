@@ -149,4 +149,19 @@ class DataController extends RestController
         return Yii::$app->dataService->delete($module, $model);
     }
 
+    /**
+     * GET /datas/<module_name>/<id>
+     *
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    public function actionView()
+    {
+        $moduleName = Yii::$app->request->getQueryParam('module_name');
+        $id = Yii::$app->request->getQueryParam('id');
+
+        $module = $this->loadModule($moduleName);
+        return $this->loadData($module, $id);
+    }
+
 }

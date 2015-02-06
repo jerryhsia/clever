@@ -103,6 +103,7 @@ $config = [
                         'POST <module_name>' => 'create',
                         'PUT <module_name>/<id>' => 'update',
                         'DELETE <module_name>/<id>' => 'delete',
+                        'GET <module_name>/<id>' => 'view',
 
                         'OPTIONS <any:.*>' => 'options'
                     ]

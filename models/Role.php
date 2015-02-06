@@ -3,6 +3,7 @@
 
 namespace app\models;
 
+use app\traits\LogTrait;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
@@ -16,6 +17,8 @@ use yii\web\ForbiddenHttpException;
  */
 class Role extends ActiveRecord
 {
+
+    use LogTrait;
 
     const DEFAULT_ROLE_ID = 1;
 
@@ -61,7 +64,8 @@ class Role extends ActiveRecord
         return $this->name;
     }
 
-    public function beforeDelete() {
+    public function beforeDelete()
+    {
         if ($this->id == self::DEFAULT_ROLE_ID) {
             throw new ForbiddenHttpException(Yii::t('role', 'Default role can not be deleted'));
         }
@@ -69,5 +73,10 @@ class Role extends ActiveRecord
             throw new ForbiddenHttpException(Yii::t('role', 'This role has been used, can not be deleted'));
         }
         return true;
+    }
+
+    public function getModuleId()
+    {
+        return -1;
     }
 }
