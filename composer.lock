@@ -323,12 +323,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jerryhsia/php-exporter.git",
-                "reference": "88f3bbcaeaf7f757a23462eb8e175e20b3a85194"
+                "reference": "5b97a377572bc6c9750ae4bee3832edcd99dc5b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jerryhsia/php-exporter/zipball/88f3bbcaeaf7f757a23462eb8e175e20b3a85194",
-                "reference": "88f3bbcaeaf7f757a23462eb8e175e20b3a85194",
+                "url": "https://api.github.com/repos/jerryhsia/php-exporter/zipball/5b97a377572bc6c9750ae4bee3832edcd99dc5b3",
+                "reference": "5b97a377572bc6c9750ae4bee3832edcd99dc5b3",
                 "shasum": ""
             },
             "require": {
@@ -336,6 +336,14 @@
                 "phpoffice/phpexcel": "~1.8"
             },
             "type": "library",
+            "extra": {
+                "writable": [
+                    "output"
+                ],
+                "executable": [
+                    "run-test"
+                ]
+            },
             "autoload": {
                 "psr-4": {
                     "jerryhsia\\": ""
@@ -351,8 +359,9 @@
                     "email": "xiajie9916@gmail.com"
                 }
             ],
-            "description": "Export data to a file",
-            "time": "2015-02-05 06:32:57"
+            "description": "A library for exporting data to file",
+            "homepage": "https://github.com/jerryhsia/php-exporter",
+            "time": "2015-02-06 07:53:43"
         },
         {
             "name": "phpoffice/phpexcel",

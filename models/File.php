@@ -128,4 +128,9 @@ class File extends \yii\db\ActiveRecord
             'md5' => Yii::t('file', 'Md5'),
         ];
     }
+
+    public function getToString()
+    {
+        return $this->getUrl();
+    }
 }

@@ -180,13 +180,15 @@ abstract class Base extends ActiveRecord
     {
         $arr = parent::toArray($fields, $expand, $recursive);
 
-        if ($this->isUser()) {
+        if ($this->isUser() && (!$fields || ($fields && in_array('role_ids', $fields)))) {
             $arr['role_ids_models'] = $this->getRoles();
         }
 
         $dataService = Yii::$app->dataService;
         $fileService = Yii::$app->fileService;
         foreach ($this->getFields() as $field) {
+            $flag = (!$fields || ($fields && in_array($field->name, $fields)));
+            if (!$flag) continue;
             if ($field->relation_id) {
                 $query = $dataService->search($field->relationModule, ['id' => $this->getAttribute($field->name)]);
                 if ($field->relation_type == Field::RELATION_HAS_ONE) {

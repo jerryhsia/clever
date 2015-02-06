@@ -4,6 +4,7 @@ namespace app\components;
 
 use app\models\Base;
 use app\models\Field;
+use jerryhsia\ExcelExporter;
 use jerryhsia\JsonExporter;
 use Yii;
 use app\models\Module;
@@ -119,9 +120,9 @@ class DataService extends Component
         $query->orderBy($sort->getAttributeOrders());
 
         $datas = [];
+        $fields = Yii::$app->moduleService->getFields($module);
+        $fields = ArrayHelper::index($fields, 'name');
         if ($mode == 'detail') {
-            $fields = Yii::$app->moduleService->getFields($module);
-            $fields = ArrayHelper::index($fields, 'name');
             $relationFields = [];
             foreach ($fields as $field) {
                 if ($field->getHasRelation()) {
@@ -129,21 +130,21 @@ class DataService extends Component
                 }
             }
 
-            $i = 0;
-            foreach ($query->all() as $data) {
-                $datas[$i] = $data->toArray();
-                foreach ($relationFields as $key) {
-                    if ($datas[$i][$fields[$key]->getModelField()]) {
-                        $datas[$i][$key] = [];
-                        foreach ($datas[$i][$fields[$key]->getModelField()] as $model) {
-                            $datas[$i][$key][] = $model->getToString();
+            $datas = $query->all();
+            foreach ($datas as $index => $data) {
+                $data = $data->toArray($exportFields);
+                foreach ($relationFields as $name) {
+                    if ($fields[$name]->getIsMultiple()) {
+                       $data[$name] = [];
+                        foreach ($data[$fields[$name]->getModelField()] as $model) {
+                            $data[$name][] = $model->getToString();
                         }
                     } else {
-                        $datas[$i][$key] = $datas[$i][$fields[$key]->getModelField()]->getToString();
+                        $data[$name] = $data[$fields[$name]->getModelField()]->getToString();
                     }
-                    unset($datas[$i][$fields[$key]->getModelField()]);
+                    unset($data[$fields[$name]->getModelField()]);
                 }
-                $i++;
+                $datas[$index] = $data;
             }
         } else {
             $datas = ArrayHelper::toArray($query->all(), $exportFields);
@@ -157,7 +158,29 @@ class DataService extends Component
             ]);
             $exporter->send();
         } else if ($format == 'xls' || $format == 'xlsx') {
+            $fieldsMap = [];
+            $multipleFields = [];
+            foreach ($exportFields as $field) {
+                $fieldsMap[$field] = $fields[$field]->title;
+                if ($fields[$field]->getIsMultiple()) {
+                    $multipleFields[] = $fields[$field]->name;
+                }
+            }
 
+            if ($multipleFields) {
+                foreach ($datas as $key => $row) {
+                    foreach ($multipleFields as $field) {
+                        $datas[$key][$field] = implode(',', $row[$field]);
+                    }
+                }
+            }
+
+            $exporter = new ExcelExporter([
+                'filename' => $module->name.'_'.time().rand(1000, 9999).'.'.$format,
+                'fields' => $fieldsMap,
+                'data' => $datas
+            ]);
+            $exporter->send();
         }
     }
 }
