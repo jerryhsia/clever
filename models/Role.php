@@ -77,6 +77,6 @@ class Role extends ActiveRecord
 
     public function getModuleId()
     {
-        return -1;
+        return Log::ROLE_MODULE_ID;
     }
 }

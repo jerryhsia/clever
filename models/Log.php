@@ -23,6 +23,8 @@ class Log extends \yii\db\ActiveRecord
     const ACTION_UPDATE = 2;
     const ACTION_DELETE = 3;
 
+    const ROLE_MODULE_ID = -1;
+
     /**
      * @inheritdoc
      */

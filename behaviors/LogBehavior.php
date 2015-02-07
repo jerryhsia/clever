@@ -18,19 +18,60 @@ class LogBehavior extends Behavior {
         ];
     }
 
+    public function onAfterInsert($event)
+    {
+        if (!Yii::$app->logService->isEnable()) return;
+
+        $log = new Log();
+
+        $data = $event->sender->toArray();
+        unset($data['to_string']);
+
+        $attributes = [
+            'action' => Log::ACTION_INSERT,
+            'module_id' => $event->sender->getModuleId(),
+            'data' => $data,
+        ];
+
+        Yii::$app->logService->save($log, $attributes);
+    }
+
     public function onAfterUpdate($event)
     {
+        if (!Yii::$app->logService->isEnable()) return;
+
         if ($event->changedAttributes) {
             $log = new Log();
 
+            $data = $event->sender->toArray();
+            unset($data['to_string']);
+
             $attributes = [
-                'action' => Log::ACTION_INSERT,
+                'action' => Log::ACTION_UPDATE,
                 'module_id' => $event->sender->getModuleId(),
-                'data' => $event->sender->toArray(),
+                'data' => $data,
                 'changed' => $event->changedAttributes,
             ];
 
             Yii::$app->logService->save($log, $attributes);
         }
+    }
+
+    public function onAfterDelete($event)
+    {
+        if (!Yii::$app->logService->isEnable()) return;
+
+        $log = new Log();
+
+        $data = $event->sender->toArray();
+        unset($data['to_string']);
+
+        $attributes = [
+            'action' => Log::ACTION_DELETE,
+            'module_id' => $event->sender->getModuleId(),
+            'data' => $data,
+        ];
+
+        Yii::$app->logService->save($log, $attributes);
     }
 }
