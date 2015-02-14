@@ -37,6 +37,8 @@ class AppController extends Controller
 
     public function actionInit()
     {
+        Yii::$app->logService->disable();
+
         $roleService = Yii::$app->roleService;
         $moduleService = Yii::$app->moduleService;
         $dataService = Yii::$app->dataService;

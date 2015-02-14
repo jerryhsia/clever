@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\traits\LogTrait;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
@@ -17,6 +18,8 @@ use yii\web\ForbiddenHttpException;
  */
 class Module extends ActiveRecord
 {
+    use LogTrait;
+
     const DEFAULT_MODULE_ID = 1;
 
     public static function tableName()
@@ -234,6 +237,11 @@ class Module extends ActiveRecord
         }
 
         return self::$_toStringFields[$this->id];
+    }
+
+    public function getModuleId()
+    {
+        return Log::MODULE_MODULE_ID;
     }
 
 }

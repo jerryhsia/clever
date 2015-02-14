@@ -29,7 +29,7 @@ class LogController extends RestController
      */
     private function load($id)
     {
-        $log = Yii::$app->logService->search(['id' => $id]);
+        $log = Yii::$app->logService->search(['id' => $id])->one();
         if (!$log) {
             throw new NotFoundHttpException(Yii::t('log', 'Log not found'));
         }
@@ -45,6 +45,8 @@ class LogController extends RestController
     {
         $params = Yii::$app->request->getQueryParams();
         $query = Yii::$app->logService->search($params);
+        $query->with(['user']);
+        $query->orderBy(['created_at' => SORT_DESC]);
 
         return new ActiveDataProvider([
             'query' => $query,
@@ -69,5 +71,10 @@ class LogController extends RestController
 
         $log = $this->load($id);
         return Yii::$app->logService->delete($log);
+    }
+
+    public function actionModules()
+    {
+        return Yii::$app->logService->getModules();
     }
 }

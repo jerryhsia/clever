@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\traits\LogTrait;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
@@ -27,6 +28,8 @@ use yii\web\ForbiddenHttpException;
  */
 class Field extends ActiveRecord
 {
+
+    use LogTrait;
 
     const INPUT_INPUT = 'input';
     const INPUT_TEXTAREA = 'textarea';
@@ -276,4 +279,10 @@ class Field extends ActiveRecord
 
         return !in_array($this->name, $fields);
     }
+
+    public function getModuleId()
+    {
+        return Log::MODULE_FIELD_ID;
+    }
+
 }

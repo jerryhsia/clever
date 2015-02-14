@@ -108,6 +108,15 @@ $config = [
                         'OPTIONS <any:.*>' => 'options'
                     ]
                 ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'log',
+                    'extraPatterns' => [
+                        'GET modules' => 'modules',
+
+                        'OPTIONS <any:.*>' => 'options'
+                    ]
+                ],
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>'
             ]
         ],

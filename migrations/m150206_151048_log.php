@@ -14,12 +14,13 @@ class m150206_151048_log extends Migration
 
         $this->createTable('{{%log}}', [
             'id'   => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT',
-            'action' => 'smallint(1) NOT NULL',
             'module_id' => 'smallint(1) NOT NULL',
+            'data_id' => 'int(11) NOT NULL',
+            'action' => 'varchar(10) NOT NULL',
             'data' => 'text NOT NULL',
             'changed' => 'text NULL',
             'created_by'  => 'int(11) NOT NULL',
-            'created_at'  => 'int(11) NOT NULL',
+            'created_at'  => 'timestamp NOT NULL',
             'created_ip'  => 'varchar(30) NOT NULL',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);

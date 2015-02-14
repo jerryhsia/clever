@@ -4,7 +4,7 @@
 Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
 
 $config = [
-    'id' => 'basic-console',
+    'id' => 'app-console',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',

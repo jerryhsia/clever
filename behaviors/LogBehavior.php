@@ -29,6 +29,7 @@ class LogBehavior extends Behavior {
 
         $attributes = [
             'action' => Log::ACTION_INSERT,
+            'data_id' => $event->sender->getPrimaryKey(),
             'module_id' => $event->sender->getModuleId(),
             'data' => $data,
         ];
@@ -48,6 +49,7 @@ class LogBehavior extends Behavior {
 
             $attributes = [
                 'action' => Log::ACTION_UPDATE,
+                'data_id' => $event->sender->getPrimaryKey(),
                 'module_id' => $event->sender->getModuleId(),
                 'data' => $data,
                 'changed' => $event->changedAttributes,
@@ -68,6 +70,7 @@ class LogBehavior extends Behavior {
 
         $attributes = [
             'action' => Log::ACTION_DELETE,
+            'data_id' => $event->sender->getPrimaryKey(),
             'module_id' => $event->sender->getModuleId(),
             'data' => $data,
         ];

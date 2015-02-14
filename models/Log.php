@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "log".
@@ -16,14 +18,16 @@ use Yii;
  * @property integer $created_at
  * @property string $created_ip
  */
-class Log extends \yii\db\ActiveRecord
+class Log extends ActiveRecord
 {
 
-    const ACTION_INSERT = 1;
-    const ACTION_UPDATE = 2;
-    const ACTION_DELETE = 3;
+    const ACTION_INSERT = 'create';
+    const ACTION_UPDATE = 'update';
+    const ACTION_DELETE = 'delete';
 
-    const ROLE_MODULE_ID = -1;
+    const MODULE_ROLE_ID = -1;
+    const MODULE_MODULE_ID = -2;
+    const MODULE_FIELD_ID = -3;
 
     /**
      * @inheritdoc
@@ -31,6 +35,14 @@ class Log extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%log}}';
+    }
+
+    public function fields()
+    {
+        return array_merge(parent::fields(), [
+            'user' => 'user',
+            'module' => 'module',
+        ]);
     }
 
     /**
@@ -46,7 +58,7 @@ class Log extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         $this->created_by = Yii::$app->user->getId() ? Yii::$app->user->getId() : 0;
-        $this->created_at = time();
+        $this->created_at = date('Y-m-d H:i:s');
         $this->created_ip = Yii::$app->request->getUserIP() ? Yii::$app->request->getUserIP() : '127.0.0.1';
         $this->data = $this->data ? json_encode($this->data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) : '';
         $this->changed = $this->changed ? json_encode($this->changed, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) : '';
@@ -66,14 +78,36 @@ class Log extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'action' => Yii::t('app', 'Action'),
-            'module_id' => Yii::t('app', 'Module ID'),
-            'data' => Yii::t('app', 'Data'),
-            'changed' => Yii::t('app', 'Changed'),
-            'created_by' => Yii::t('app', 'Created By'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'created_ip' => Yii::t('app', 'Created Ip'),
+            'id' => Yii::t('log', 'ID'),
+            'action' => Yii::t('log', 'Action'),
+            'module_id' => Yii::t('log', 'Module ID'),
+            'data' => Yii::t('log', 'Data'),
+            'changed' => Yii::t('log', 'Changed'),
+            'created_by' => Yii::t('log', 'Created By'),
+            'created_at' => Yii::t('log', 'Created At'),
+            'created_ip' => Yii::t('log', 'Created Ip'),
         ];
+    }
+
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'created_by']);
+    }
+
+    private static $_modules = false;
+
+    public function getModule()
+    {
+        if (self::$_modules === false) {
+            $modules = Yii::$app->logService->getModules();
+            $modules = ArrayHelper::index($modules, 'id');
+            self::$_modules = $modules;
+        }
+
+        if (isset(self::$_modules[$this->module_id])) {
+            return self::$_modules[$this->module_id];
+        } else {
+            return null;
+        }
     }
 }

@@ -64,8 +64,17 @@ class LogService extends Component
     public function getModules()
     {
         $data = [
-            ['id' => Log::ROLE_MODULE_ID, ],
+            ['id' => Log::MODULE_ROLE_ID, 'name' => Yii::t('app', 'Role')],
+            ['id' => Log::MODULE_MODULE_ID, 'name' => Yii::t('app', 'Module')],
+            ['id' => Log::MODULE_FIELD_ID, 'name' => Yii::t('app', 'Field')]
         ];
+
+        $modules = Yii::$app->moduleService->getModules();
+        foreach ($modules as $module) {
+            $data[] = ['id' => $module->id, 'name' => $module->name];
+        }
+
+        return $data;
     }
 
     public function delete(Log $log)
