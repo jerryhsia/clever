@@ -1,13 +1,16 @@
 <?php
 
 namespace app\models;
-use app\components\App;
+use app\components\Clever;
+use app\traits\LogTrait;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
 
 abstract class Base extends ActiveRecord
 {
+    use LogTrait;
+
     public function fields()
     {
         $fields = parent::fields();
@@ -74,7 +77,7 @@ abstract class Base extends ActiveRecord
                     $userRole->save();
                 }
             } else {
-                App::copyErrors($user, $this);
+                Clever::copyErrors($user, $this);
                 return false;
             }
         }
@@ -222,4 +225,11 @@ abstract class Base extends ActiveRecord
 
         return str_replace($arr, $data, $this->getModule()->to_string);
     }
+
+    public function getModuleId()
+    {
+        return $this->getModule()->id;
+    }
+
+
 }

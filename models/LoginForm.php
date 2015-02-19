@@ -3,7 +3,7 @@
 
 namespace app\models;
 
-use app\components\App;
+use app\components\Clever;
 use Yii;
 use yii\base\Model;
 
@@ -15,7 +15,7 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
-    public $identity;
+    public $account;
     public $password;
     public $remember = true;
 
@@ -24,7 +24,7 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['identity', 'password'], 'required'],
+            [['account', 'password'], 'required'],
             ['password', 'validateUser'],
         ];
     }
@@ -34,9 +34,9 @@ class LoginForm extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user) {
-                $this->addError('identity', Yii::t('user', 'User not found'));
+                $this->addError('account', Yii::t('user', 'User not found'));
             }
-            if ($user && ($user->password != App::createPassword($this->password))) {
+            if ($user && ($user->password != Clever::createPassword($this->password))) {
                 $this->addError('password', Yii::t('user', 'Incorrect password'));
             }
         }
@@ -45,7 +45,7 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->user === false) {
-            $this->user = Yii::$app->userService->getUserByIdentity($this->identity);
+            $this->user = Yii::$app->userService->getUserByAccount($this->account);
         }
         return $this->user;
     }

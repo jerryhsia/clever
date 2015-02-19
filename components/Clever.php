@@ -4,11 +4,7 @@ namespace app\components;
 use Yii;
 use yii\db\ActiveRecord;
 
-/**
- * Class App
- * @author Jerry Hsia<xiajie9916@gmail.com>
- */
-class App
+class Clever
 {
 
     public static function createPassword($password)

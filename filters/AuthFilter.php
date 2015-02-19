@@ -2,6 +2,7 @@
 
 namespace app\filters;
 
+use app\components\WebUser;
 use yii\filters\auth\QueryParamAuth;
 use yii;
 
@@ -25,9 +26,10 @@ class AuthFilter extends QueryParamAuth
         }
 
         $accessToken = $request->getHeaders()->get('x-' . $this->tokenParam, $request->get($this->tokenParam));
+        $type = $request->getQueryParam('app_id') ? WebUser::TYPE_APP : WebUser::TYPE_APP;
 
         if (is_string($accessToken)) {
-            $identity = $user->loginByAccessToken($accessToken, get_class($this));
+            $identity = $user->loginByAccessToken($accessToken, $type);
             if ($identity) {
                 return $identity;
             }

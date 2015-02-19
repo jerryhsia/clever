@@ -78,7 +78,7 @@ class ModuleService extends Component
             Yii::$app->cache->set(self::CACHE_MODULES, $modules);
         }
 
-        return $isIndexed ? $modules : App::removeIndex($modules);
+        return $isIndexed ? $modules : Clever::removeIndex($modules);
     }
 
     /**
@@ -146,7 +146,7 @@ class ModuleService extends Component
         }
 
         $result = isset($fields[$module->id]) ? $fields[$module->id] : [];
-        return $isIndexed ? $result : App::removeIndex($result);
+        return $isIndexed ? $result : Clever::removeIndex($result);
     }
 
     /**

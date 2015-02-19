@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\App;
+use app\components\Clever;
 use Yii;
 
 /**
@@ -91,7 +91,7 @@ class File extends \yii\db\ActiveRecord
 
     public function getUrl()
     {
-        return App::getRootUrl().'/uploads/'.$this->getPath();
+        return Clever::getRootUrl().'/uploads/'.$this->getPath();
     }
 
     public function getIsImage()

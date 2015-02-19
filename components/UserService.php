@@ -22,9 +22,9 @@ class UserService extends Component
         return $user->save();
     }
 
-    public function getUserByIdentity($identity)
+    public function getUserByAccount($account)
     {
-        return $this->getUsers(['identity' => $identity])->one();
+        return $this->getUsers(['Account' => $account])->one();
     }
 
     public function getUser($id)
@@ -40,10 +40,10 @@ class UserService extends Component
             $query->andFilterWhere(['id' => $filters['id']]);
         }
 
-        if (isset($filters['identity']) && strlen($filters['identity'])) {
+        if (isset($filters['account']) && strlen($filters['account'])) {
             $where[] = 'or';
-            $where[] = sprintf("username = '%s'", $filters['identity']);
-            $where[] = sprintf("email = '%s'", $filters['identity']);
+            $where[] = sprintf("username = '%s'", $filters['account']);
+            $where[] = sprintf("email = '%s'", $filters['account']);
             $query->andWhere($where);
         }
 
@@ -65,20 +65,21 @@ class UserService extends Component
     public function login(LoginForm $loginForm)
     {
         if ($loginForm->validate()) {
-            $user = $loginForm->getUser();
+            $userModel = $loginForm->getUser();
 
-            $time = $loginForm->remember ? 7 * 24 * 3600 : 0;
-            Yii::$app->user->login($user, $time);
-            $accessToken = md5(uniqid().$loginForm->identity);
-            Yii::$app->cache->set('user_'.$accessToken, $user, $time);
-            return $accessToken;
+            $webUser = new WebUser();
+            $webUser->type = WebUser::TYPE_USER;
+            $webUser->id = $userModel->id;
+            $webUser->model = $userModel;
+            $webUser->duration = $loginForm->remember ? 7 * 24 * 3600 : 0;
+            $webUser->accessToken = md5(uniqid());
+
+            Yii::$app->user->login($webUser);
+            return $webUser->accessToken;
         } else {
             return false;
         }
     }
 
-    public function getIdentityByAccessToken($accessToken)
-    {
-        return Yii::$app->cache->get('user_'.$accessToken);
-    }
+
 }

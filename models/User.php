@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\App;
+use app\components\Clever;
 use Codeception\Command\SelfUpdate;
 use Yii;
 use yii\db\ActiveRecord;
@@ -16,7 +16,7 @@ use yii\web\IdentityInterface;
  * @property string $email
  * @property string $password
  */
-class User extends ActiveRecord implements IdentityInterface
+class User extends ActiveRecord
 {
     const SUPER_USER_ID = 1;
 
@@ -51,7 +51,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function beforeSave($insert)
     {
         if ($this->password) {
-            $this->password = App::createPassword($this->password);
+            $this->password = Clever::createPassword($this->password);
         } else {
             $this->password = $this->getOldAttribute('password');
         }
@@ -73,45 +73,5 @@ class User extends ActiveRecord implements IdentityInterface
             'roles' => Yii::t('user', 'Roles'),
             'role_ids' => Yii::t('user', 'Roles')
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function findIdentity($id)
-    {
-        return self::find()->andWhere(['id' => $id])->one();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        return  Yii::$app->userService->getIdentityByAccessToken($token);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAuthKey()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function validateAuthKey($authKey)
-    {
-        return $this->authKey === $authKey;
     }
 }

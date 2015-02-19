@@ -186,6 +186,15 @@ class Module extends ActiveRecord
                 'is_search' => 1,
             ],
             [
+                'name' => 'avatar',
+                'type' => 'int',
+                'size' => 11,
+                'is_null' => 1,
+                'is_list' => 1,
+                'is_search' => 0,
+                'input' => Field::INPUT_FILE
+            ],
+            [
                 'name' => 'username',
                 'type' => 'varchar',
                 'size' => 50,

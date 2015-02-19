@@ -3,7 +3,7 @@
 
 namespace app\controllers;
 
-use app\components\App;
+use app\components\Clever;
 use app\models\Field;
 use Yii;
 use app\models\Module;

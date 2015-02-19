@@ -37,7 +37,7 @@ class RoleService extends Component
             Yii::$app->cache->set(self::CACHE_ROLES, $roles);
         }
 
-        return $isIndexed ? $roles : App::removeIndex($roles);
+        return $isIndexed ? $roles : Clever::removeIndex($roles);
     }
 
     /**

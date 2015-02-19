@@ -22,7 +22,7 @@ $config = [
             ]
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\components\WebUser',
             'enableAutoLogin' => false,
             'enableSession' => false
         ],

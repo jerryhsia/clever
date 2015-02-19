@@ -1,7 +1,7 @@
 <?php
 namespace app\controllers;
 
-use app\components\App;
+use app\components\Clever;
 use jerryhsia\JsonExporter;
 use Yii;
 use yii\filters\AccessControl;
