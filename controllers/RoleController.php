@@ -91,34 +91,4 @@ class RoleController extends RestController
         $role = $this->load($id);
         return Yii::$app->roleService->delete($role);
     }
-
-    private function checkModuleId($moduleId)
-    {
-        if (!$moduleId) {
-            throw new BadRequestHttpException(Yii::t('app', 'The \'module_id\' param required'));
-        }
-    }
-
-    public function actionGetPermission()
-    {
-        $id = Yii::$app->request->getQueryParam('id');
-        $moduleId = Yii::$app->request->getQueryParam('module_id', 0);
-        $this->checkModuleId($moduleId);
-
-        $role = $this->load($id);
-        $model = Yii::$app->roleService->getPermissions($role, $moduleId);
-
-        return $model;
-    }
-
-    public function actionUpdatePermission()
-    {
-        $id = Yii::$app->request->getQueryParam('id');
-        $attributes = Yii::$app->request->getBodyParams();
-        $moduleId = Yii::$app->request->getBodyParam('module_id', 0);
-        $this->checkModuleId($moduleId);
-
-        $role = $this->load($id);
-        return Yii::$app->roleService->savePermission($role, $attributes);
-    }
 }

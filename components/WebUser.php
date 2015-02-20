@@ -24,7 +24,7 @@ class WebUser extends Component implements IdentityInterface
 
     public static function login(WebUser $webUser)
     {
-
+        Yii::$app->user->login($webUser);
         Yii::$app->cache->set($webUser->accessToken, $webUser, $webUser->duration);
 
         return true;

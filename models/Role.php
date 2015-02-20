@@ -75,6 +75,19 @@ class Role extends ActiveRecord
         return true;
     }
 
+    public function beforeSave($insert)
+    {
+        if (is_array($this->permission)) {
+            $this->permission = json_encode($this->permission);
+        }
+        return parent::beforeSave($insert);
+    }
+
+    public function afterFind()
+    {
+        $this->permission = json_decode($this->permission, true);
+    }
+
     public function getModuleId()
     {
         return Log::MODULE_ROLE_ID;

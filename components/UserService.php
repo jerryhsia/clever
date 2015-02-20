@@ -74,7 +74,7 @@ class UserService extends Component
             $webUser->duration = $loginForm->remember ? 7 * 24 * 3600 : 0;
             $webUser->accessToken = md5(uniqid());
 
-            Yii::$app->user->login($webUser);
+            WebUser::login($webUser);
             return $webUser->accessToken;
         } else {
             return false;
