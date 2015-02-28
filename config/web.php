@@ -18,7 +18,7 @@ $config = [
             'redis' => [
                 'hostname' => 'localhost',
                 'port' => 6379,
-                'database' => 1,
+                //'database' => 1,
             ]
         ],
         'user' => [
@@ -76,6 +76,13 @@ $config = [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'file',
+                    'extraPatterns' => [
+                        'OPTIONS <any:.*>' => 'options'
+                    ]
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'app',
                     'extraPatterns' => [
                         'OPTIONS <any:.*>' => 'options'
                     ]

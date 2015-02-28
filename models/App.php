@@ -27,7 +27,7 @@ class App extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'access_token'], 'required'],
+            [['name'], 'required'],
             [['name'], 'string', 'max' => 50],
             [['access_token'], 'string', 'max' => 32]
         ];

@@ -16,6 +16,9 @@ return [
     'moduleService' => [
         'class' => 'app\components\ModuleService',
     ],
+    'appService' => [
+        'class' => 'app\components\AppService',
+    ],
     'settingService' => [
         'class' => 'app\components\SettingService',
     ],
