@@ -2,14 +2,14 @@
 
 namespace app\models;
 use app\components\Clever;
-use app\traits\LogTrait;
+use app\traits\LogableTrait;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
 
 abstract class Base extends ActiveRecord
 {
-    use LogTrait;
+    use LogableTrait;
 
     public function fields()
     {

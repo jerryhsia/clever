@@ -27,7 +27,8 @@ class m150219_144315_app extends Migration
 
     public function down()
     {
-        echo "m150219_144315_app cannot be reverted.\n";
+        $this->dropTable('{{%app}}');
+        $this->dropTable('{{%app_role}}');
 
         return false;
     }

@@ -3,7 +3,7 @@
 
 namespace app\models;
 
-use app\traits\LogTrait;
+use app\traits\LogableTrait;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
@@ -18,7 +18,7 @@ use yii\web\ForbiddenHttpException;
 class Role extends ActiveRecord
 {
 
-    use LogTrait;
+    use LogableTrait;
 
     const DEFAULT_ROLE_ID = 1;
 

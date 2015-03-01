@@ -2,7 +2,7 @@
 
 namespace app\traits;
 
-trait LogTrait {
+trait LogTraitTrait {
 
     /**
      * @inheritdoc
