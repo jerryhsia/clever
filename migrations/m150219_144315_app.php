@@ -18,6 +18,11 @@ class m150219_144315_app extends Migration
             'access_token' => 'varchar(32) NOT NULL',
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
+
+        $this->createTable('{{%app_role}}', [
+            'app_id'  => 'int(11) UNSIGNED NOT NULL',
+            'role_id'  => 'int(11) UNSIGNED NOT NULL'
+        ], $tableOptions);
     }
 
     public function down()

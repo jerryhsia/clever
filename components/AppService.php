@@ -27,6 +27,8 @@ class AppService extends Component
     public function saveApp (App $app, array $attributes)
     {
         $app->setAttributes($attributes, false);
+        $app->tempRoleIds = isset($attributes['role_ids']) ? $attributes['role_ids'] : [];
+
         $result = $app->save();
 
         if ($result) {
