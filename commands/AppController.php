@@ -7,6 +7,7 @@ use app\models\Module;
 use app\models\Role;
 use Yii;
 use yii\console\Controller;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class AppController
@@ -72,7 +73,7 @@ class AppController extends Controller
             'name'     => 'Admin',
             'email'    => 'admin@admin.com',
             'username' => 'admin',
-            'password' => 123456,
+            'password' => 'admin',
             'role_ids' => [1]
         ];
         $dataService->save($module, $model, $attributes);

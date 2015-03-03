@@ -20,14 +20,6 @@ class m130524_201442_user extends Migration
             'PRIMARY KEY `id`(`id`)'
         ], $tableOptions);
 
-        $this->createTable('{{%role_permission}}', [
-            'id'        => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT',
-            'role_id'   => 'int(11) NOT NULL',
-            'module_id' => 'int(11) NOT NULL',
-            'permission' => 'text NULL',
-            'PRIMARY KEY `id`(`id`)'
-        ], $tableOptions);
-
         $this->createTable('{{%user}}', [
             'id'       => 'int(11)     UNSIGNED NOT NULL AUTO_INCREMENT',
             'module_id'=> 'int(11) UNSIGNED NOT NULL',
