@@ -2,11 +2,9 @@
 
 
 namespace app\components;
-use app\models\RolePermission;
 use Yii;
 use app\models\Role;
 use yii\base\Component;
-use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 
 /**

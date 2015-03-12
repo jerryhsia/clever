@@ -2,9 +2,9 @@
     "name": "Clever CMS",
     "description": "Clever CMS",
     "keywords": ["Clever"],
-    "homepage": "http://www.celver-cms.me/",
+    "homepage": "",
     "type": "project",
-    "license": "Proprietary",
+    "license": "MIT",
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",

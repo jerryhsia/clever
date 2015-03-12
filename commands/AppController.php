@@ -7,7 +7,6 @@ use app\models\Module;
 use app\models\Role;
 use Yii;
 use yii\console\Controller;
-use yii\helpers\ArrayHelper;
 
 /**
  * Class AppController
