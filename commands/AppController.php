@@ -12,7 +12,7 @@ use yii\console\Controller;
  * Class AppController
  *
  * @package app\commands
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class AppController extends Controller
 {

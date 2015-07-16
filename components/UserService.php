@@ -11,7 +11,7 @@ use Yii;
  * Class UserService
  *
  * @package app\components
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class UserService extends Component
 {

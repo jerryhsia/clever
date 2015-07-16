@@ -11,7 +11,7 @@ use yii\rest\Controller;
  * Class RestController
  *
  * @package common\components
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class RestController extends Controller
 {

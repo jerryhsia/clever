@@ -12,7 +12,7 @@ class UserCest
     {
         $user = [
             'name' => 'Jerry',
-            'email' => 'xiajie9916@gmail.com',
+            'email' => 'jerry9916@qq.com',
             'username' => 'Jerry',
             'password' => '123456',
             'role_id' => 1

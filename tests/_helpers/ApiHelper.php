@@ -12,7 +12,7 @@ require __DIR__ . '/../api/_bootstrap.php';
  * Class ApiHelper
  *
  * @package app\tests\_helpers
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class ApiHelper extends REST
 {

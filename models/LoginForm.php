@@ -11,7 +11,7 @@ use yii\base\Model;
  * Class LoginForm
  *
  * @package app\models
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class LoginForm extends Model
 {

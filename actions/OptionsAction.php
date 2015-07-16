@@ -7,7 +7,7 @@ use Yii;
  * Class OptionsAction
  *
  * @package app\actions
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class OptionsAction extends \yii\rest\OptionsAction
 {

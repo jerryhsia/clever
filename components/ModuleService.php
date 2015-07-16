@@ -12,7 +12,7 @@ use yii\base\Component;
  * Class ModuleService
  *
  * @package app\components
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class ModuleService extends Component
 {

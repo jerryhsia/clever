@@ -11,7 +11,7 @@ use yii\web\NotFoundHttpException;
  * Class AppController
  *
  * @package app\controllers
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class AppController extends RestController
 {

@@ -11,7 +11,7 @@ use yii\web\Application;
  * Class AppBehavior
  *
  * @package app\behaviors
- * @author Jerry Hsia<xiajie9916@gmail.com>
+ * @author Jerry Hsia<jerry9916@qq.com>
  */
 class AppBehavior extends Behavior
 {
