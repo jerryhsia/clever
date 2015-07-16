@@ -3,11 +3,12 @@
 return [
     'components' => [
         'cache' => [
-            'class' => 'yii\redis\Cache',
+            'class' => 'yii\caching\FileCache'
+            /*'class' => 'yii\redis\Cache',
             'redis' => [
                 'hostname' => 'localhost',
                 'port' => 6379
-            ]
+            ]*/
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace app\actions;
 use Yii;
 
